@@ -22,13 +22,15 @@ import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import android.content.SharedPreferences;
 
 @Module
 @InstallIn(SingletonComponent.class)
 public class NetworkModule {
     
     private static final String TAG = "NetworkModule";
-    private static final String BASE_URL = "http://10.0.2.2:8080/"; // Para emulador Android
+    private static final String BASE_URL = "http://192.168.1.9:8080/"; // IP local
+    // Para emulador Android usar: "http://10.0.2.2:8080/"
     // Para dispositivo físico usar: "http://[TU_IP_LOCAL]:8080/"
     
     @Provides
@@ -41,7 +43,7 @@ public class NetworkModule {
     
     @Provides
     @Singleton
-    public OkHttpClient provideOkHttpClient(@ApplicationContext Context context) {
+    public OkHttpClient provideOkHttpClient(@ApplicationContext Context context, SharedPreferences encryptedPrefs) {
         // Interceptor para logging (solo en debug)
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(message -> {
             if (Log.isLoggable(TAG, Log.DEBUG)) {
@@ -54,13 +56,25 @@ public class NetworkModule {
         Interceptor authInterceptor = chain -> {
             Request originalRequest = chain.request();
             
-            // TODO: Obtener token desde EncryptedSharedPreferences
-            // Por ahora, no agregamos token
-            Request newRequest = originalRequest.newBuilder()
-                    .header("Content-Type", "application/json")
-                    .build();
+            // Obtener token desde EncryptedSharedPreferences
+            String token = encryptedPrefs.getString("jwt_token", null);
             
-            return chain.proceed(newRequest);
+            Request.Builder requestBuilder = originalRequest.newBuilder()
+                    .header("Content-Type", "application/json");
+            
+            // Agregar Authorization header si hay token
+            if (token != null && !token.isEmpty()) {
+                requestBuilder.header("Authorization", "Bearer " + token);
+                Log.d(TAG, "✅ JWT agregado a la petición: " + originalRequest.url());
+                Log.d(TAG, "🔑 Token: " + token.substring(0, Math.min(20, token.length())) + "...");
+                Log.d(TAG, "🔍 Headers que se enviarán: " + requestBuilder.build().headers());
+                System.out.println("🔑 TOKEN COMPLETO PARA POSTMAN: " + token);
+            } else {
+                Log.d(TAG, "❌ No hay JWT disponible para: " + originalRequest.url());
+                System.out.println("❌ NO HAY TOKEN DISPONIBLE");
+            }
+            
+            return chain.proceed(requestBuilder.build());
         };
         
         return new OkHttpClient.Builder()
@@ -87,6 +101,7 @@ public class NetworkModule {
     public RitmoFitApiService provideApiService(Retrofit retrofit) {
         return retrofit.create(RitmoFitApiService.class);
     }
+    
 }
 
 

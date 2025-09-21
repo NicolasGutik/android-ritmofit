@@ -15,23 +15,23 @@ public class FiltroClaseDTO {
     @SerializedName("fechaHasta")
     private String fechaHasta;
     
-    @SerializedName("pagina")
-    private Integer pagina = 0;
+    @SerializedName("page")
+    private Integer page = 0;
     
-    @SerializedName("tamanio")
-    private Integer tamanio = 10;
+    @SerializedName("size")
+    private Integer size = 10;
     
     // Constructores
     public FiltroClaseDTO() {}
     
     public FiltroClaseDTO(String sede, String disciplina, String fechaDesde, 
-                         String fechaHasta, Integer pagina, Integer tamanio) {
+                         String fechaHasta, Integer page, Integer size) {
         this.sede = sede;
         this.disciplina = disciplina;
         this.fechaDesde = fechaDesde;
         this.fechaHasta = fechaHasta;
-        this.pagina = pagina;
-        this.tamanio = tamanio;
+        this.page = page;
+        this.size = size;
     }
     
     // Getters y Setters
@@ -47,11 +47,11 @@ public class FiltroClaseDTO {
     public String getFechaHasta() { return fechaHasta; }
     public void setFechaHasta(String fechaHasta) { this.fechaHasta = fechaHasta; }
     
-    public Integer getPagina() { return pagina; }
-    public void setPagina(Integer pagina) { this.pagina = pagina; }
+    public Integer getPage() { return page; }
+    public void setPage(Integer page) { this.page = page; }
     
-    public Integer getTamanio() { return tamanio; }
-    public void setTamanio(Integer tamanio) { this.tamanio = tamanio; }
+    public Integer getSize() { return size; }
+    public void setSize(Integer size) { this.size = size; }
     
     @Override
     public String toString() {
@@ -60,8 +60,8 @@ public class FiltroClaseDTO {
                 ", disciplina='" + disciplina + '\'' +
                 ", fechaDesde='" + fechaDesde + '\'' +
                 ", fechaHasta='" + fechaHasta + '\'' +
-                ", pagina=" + pagina +
-                ", tamanio=" + tamanio +
+                ", page=" + page +
+                ", size=" + size +
                 '}';
     }
 }

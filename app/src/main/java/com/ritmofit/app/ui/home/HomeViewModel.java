@@ -32,8 +32,8 @@ public class HomeViewModel extends ViewModel {
     public void cargarClases() {
         // Crear filtro por defecto (todas las clases)
         FiltroClaseDTO filtro = new FiltroClaseDTO();
-        filtro.setPagina(0);
-        filtro.setTamanio(20);
+        filtro.setPage(0);
+        filtro.setSize(20);
         
         LiveData<ApiResult<RespuestaPaginadaDTO<ClaseDTO>>> result = claseRepository.obtenerClases(filtro);
         
@@ -45,8 +45,8 @@ public class HomeViewModel extends ViewModel {
         FiltroClaseDTO filtro = new FiltroClaseDTO();
         filtro.setSede(sede);
         filtro.setDisciplina(disciplina);
-        filtro.setPagina(0);
-        filtro.setTamanio(20);
+        filtro.setPage(0);
+        filtro.setSize(20);
         
         LiveData<ApiResult<RespuestaPaginadaDTO<ClaseDTO>>> result = claseRepository.obtenerClases(filtro);
         result.observeForever(apiResult -> clases.setValue(apiResult));

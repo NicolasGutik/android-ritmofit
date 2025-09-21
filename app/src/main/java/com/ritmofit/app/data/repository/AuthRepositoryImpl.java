@@ -211,6 +211,10 @@ public class AuthRepositoryImpl implements AuthRepository {
         encryptedPrefs.edit()
                 .putString(KEY_JWT_TOKEN, token)
                 .apply();
+        
+        // Log para testing en Postman
+        Log.i(TAG, "🔑 TOKEN GUARDADO (para Postman): " + token);
+        System.out.println("🔑 TOKEN PARA POSTMAN: " + token);
     }
     
     @Override
