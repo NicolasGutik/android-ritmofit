@@ -2,19 +2,20 @@ package com.ritmofit.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import com.ritmofit.app.auth.ui.LoginActivity;
 import com.ritmofit.app.data.repository.AuthRepository;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import javax.inject.Inject;
 
@@ -25,8 +26,6 @@ public class MainActivity extends AppCompatActivity {
     
     @Inject
     AuthRepository authRepository;
-    
-    private FragmentContainerView fragmentContainerView;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        
-        fragmentContainerView = findViewById(R.id.fragment_container_view);
         
         // Verificar si el usuario está autenticado
         if (!authRepository.isUsuarioAutenticado()) {
@@ -61,9 +58,11 @@ public class MainActivity extends AppCompatActivity {
         
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();
-            // La configuración del navigation graph se hace en el XML
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+            if (bottomNavigationView == null) {
+                return;
+            }
+            NavigationUI.setupWithNavController(bottomNavigationView, navController);
         }
     }
 }
-
-
