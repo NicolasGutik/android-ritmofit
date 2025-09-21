@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Disciplina -->
+        <TextView
+            android:id="@+id/tv_disciplina"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/ritmo_fit_primary"
+            tools:text="Yoga" />
+
+        <!-- Sede -->
+        <TextView
+            android:id="@+id/tv_sede"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            android:textColor="@color/gray_dark"
+            tools:text="Sede Norte" />
+
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/tv_fecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            android:textColor="@color/gray_dark"
+            tools:text="15/01/2025 10:00" />
+
+        <!-- Profesor -->
+        <TextView
+            android:id="@+id/tv_profesor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            android:textColor="@color/gray_dark"
+            tools:text="Prof. María González" />
+
+        <!-- Cupos -->
+        <TextView
+            android:id="@+id/tv_cupos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:textColor="@color/ritmo_fit_secondary"
+            android:textStyle="bold"
+            tools:text="Cupos: 15/20" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

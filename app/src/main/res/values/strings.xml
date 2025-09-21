@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">RitmoFit</string>
+    
+    <!-- Navegación -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_reservas">Mis Reservas</string>
+    <string name="nav_historial">Historial</string>
+    <string name="nav_perfil">Perfil</string>
+    
+    <!-- Autenticación -->
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="email_hint">Email</string>
+    <string name="otp_hint">Código OTP</string>
+    <string name="login_button">Enviar OTP</string>
+    <string name="validate_button">Validar OTP</string>
+    
+    <!-- Clases -->
+    <string name="clases_title">Clases Disponibles</string>
+    <string name="detalle_clase_title">Detalle de Clase</string>
+    <string name="reservar_button">Reservar</string>
+    <string name="cancelar_reserva_button">Cancelar Reserva</string>
+    
+    <!-- Errores -->
+    <string name="error_network">Error de conexión</string>
+    <string name="error_loading">Cargando...</string>
+    <string name="retry_button">Reintentar</string>
+    <string name="empty_list">No hay elementos para mostrar</string>
+</resources>

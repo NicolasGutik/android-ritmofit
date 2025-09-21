@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <!-- Home Fragment -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.ritmofit.app.ui.home.HomeFragment"
+        android:label="@string/nav_home"
+        tools:layout="@layout/fragment_home">
+        
+        <action
+            android:id="@+id/action_home_to_detalle"
+            app:destination="@id/detalleClaseFragment" />
+            
+    </fragment>
+
+    <!-- Detalle Clase Fragment -->
+    <fragment
+        android:id="@+id/detalleClaseFragment"
+        android:name="com.ritmofit.app.ui.home.DetalleClaseFragment"
+        android:label="@string/detalle_clase_title"
+        tools:layout="@layout/fragment_detalle_clase">
+        
+        <argument
+            android:name="claseId"
+            app:argType="long" />
+            
+        <action
+            android:id="@+id/action_detalle_to_reservas"
+            app:destination="@id/misReservasFragment" />
+            
+    </fragment>
+
+    <!-- Mis Reservas Fragment -->
+    <fragment
+        android:id="@+id/misReservasFragment"
+        android:name="com.ritmofit.app.ui.reservas.MisReservasFragment"
+        android:label="@string/nav_reservas"
+        tools:layout="@layout/fragment_mis_reservas" />
+
+    <!-- Historial Fragment -->
+    <fragment
+        android:id="@+id/historialFragment"
+        android:name="com.ritmofit.app.ui.historial.HistorialFragment"
+        android:label="@string/nav_historial"
+        tools:layout="@layout/fragment_historial" />
+
+    <!-- Perfil Fragment -->
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.ritmofit.app.ui.perfil.PerfilFragment"
+        android:label="@string/nav_perfil"
+        tools:layout="@layout/fragment_perfil" />
+
+</navigation>
