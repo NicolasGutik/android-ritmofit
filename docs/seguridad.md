@@ -42,7 +42,7 @@ public class StorageModule {
 }
 ```
 
-#### Almacenamiento de JWT
+#### Almacenamiento de JWT (IMPLEMENTADO)
 ```java
 public class AuthRepositoryImpl implements AuthRepository {
     
@@ -68,8 +68,22 @@ public class AuthRepositoryImpl implements AuthRepository {
                 .remove(KEY_USER_DATA)
                 .apply();
     }
+    
+    @Override
+    public boolean isUsuarioAutenticado() {
+        String token = obtenerToken();
+        return token != null && !token.isEmpty();
+    }
 }
 ```
+
+**Flujo de Autenticación Seguro**:
+1. **LoginActivity** → Usuario ingresa email
+2. **Envío OTP** → `POST /auth/login` → OTP enviado por email
+3. **Validación OTP** → `POST /auth/validate` → JWT + User data
+4. **Almacenamiento** → JWT guardado en EncryptedSharedPreferences
+5. **Verificación** → MainActivity verifica `isUsuarioAutenticado()`
+6. **Persistencia** → Sesión se mantiene entre reinicios de app
 
 ### 2. Interceptor JWT Automático
 
@@ -138,7 +152,7 @@ public OkHttpClient provideOkHttpClient() {
 
 ### 4. Validación de Datos de Entrada
 
-#### Validación en Formularios
+#### Validación en Formularios (IMPLEMENTADO)
 ```java
 public class LoginActivity extends AppCompatActivity {
     
@@ -169,6 +183,23 @@ public class LoginActivity extends AppCompatActivity {
         }
         
         return true;
+    }
+    
+    // Implementación completa con UI reactiva
+    private void sendOtp() {
+        String email = etEmail.getText().toString().trim();
+        if (!validarEmail(email)) return;
+        
+        showLoading(true);
+        authRepository.enviarOTP(email).observe(this, result -> {
+            showLoading(false);
+            if (result instanceof ApiResult.Success) {
+                showOtpFields();
+                Toast.makeText(this, "Código OTP enviado", Toast.LENGTH_LONG).show();
+            } else if (result instanceof ApiResult.Error) {
+                showError("Error al enviar OTP: " + ((ApiResult.Error<String>) result).getMessage());
+            }
+        });
     }
 }
 ```
@@ -422,6 +453,9 @@ android {
 - ✅ **Manejo seguro de errores**: No exponer información sensible
 - ✅ **Permisos mínimos**: Solo INTERNET necesario
 - ✅ **Logging seguro**: No loggear datos sensibles
+- ✅ **Autenticación OTP**: Implementada con validación completa
+- ✅ **Persistencia de sesión**: JWT almacenado de forma segura
+- ✅ **Verificación de autenticación**: MainActivity verifica sesión al iniciar
 - ⏳ **Certificate Pinning**: Pendiente para producción
 - ⏳ **Root Detection**: Pendiente para producción
 - ⏳ **Obfuscation**: Configurado en ProGuard

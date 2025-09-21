@@ -156,14 +156,15 @@ adb logcat | grep RitmoFit
 // Código: "123456"
 ```
 
-### 2. Flujo de Prueba
+### 2. Flujo de Prueba (IMPLEMENTADO)
 1. **Iniciar app** → Debe mostrar LoginActivity
 2. **Login** → Ingresar email de prueba
 3. **OTP** → Ingresar código "123456"
 4. **Navegación** → Debe ir a MainActivity con HomeFragment
-5. **Cargar clases** → Debe mostrar lista de clases
-6. **Detalle** → Tocar una clase para ver detalles
-7. **Reservas** → Navegar a "Mis Reservas"
+5. **Persistencia** → Cerrar y abrir app → Debe ir directo a MainActivity
+6. **Cargar clases** → Debe mostrar lista de clases
+7. **Detalle** → Tocar una clase para ver detalles
+8. **Reservas** → Navegar a "Mis Reservas"
 
 ### 3. Verificar Funcionalidades
 ```bash
@@ -175,6 +176,12 @@ adb logcat | grep "NetworkModule"
 
 # Verificar logs de navegación
 adb logcat | grep "Navigation"
+
+# Verificar logs de LoginActivity
+adb logcat | grep "LoginActivity"
+
+# Verificar almacenamiento seguro
+adb logcat | grep "EncryptedSharedPreferences"
 ```
 
 ## Solución de Problemas
@@ -219,6 +226,22 @@ curl http://localhost:8080/auth/login
 
 # Limpiar datos de la app
 adb shell pm clear com.ritmofit.app
+```
+
+### Error: "MalformedJsonException" en OTP
+```bash
+# Este error ya está resuelto con Gson lenient
+# Si persiste, verificar que el backend esté enviando respuesta de texto plano
+# Verificar logs del backend para ver qué está enviando
+```
+
+### Error: "App se cierra inmediatamente"
+```bash
+# Verificar logs de crash
+adb logcat | grep "AndroidRuntime"
+
+# Verificar configuración de MasterKey en StorageModule
+# Verificar que usesCleartextTraffic esté habilitado en AndroidManifest.xml
 ```
 
 ### Error: "Build failed" con dependencias

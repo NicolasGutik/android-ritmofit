@@ -56,6 +56,16 @@ public class MainActivity extends AppCompatActivity {
     // Verifica autenticación al iniciar
     // Host de todos los fragments
 }
+
+@AndroidEntryPoint
+public class LoginActivity extends AppCompatActivity {
+    @Inject AuthRepository authRepository;
+    
+    // Autenticación OTP completa
+    // UI: email input → OTP input → validación
+    // Flujo: enviar OTP → validar OTP → navegar a MainActivity
+    // Persistencia: JWT almacenado en EncryptedSharedPreferences
+}
 ```
 
 #### Fragments
@@ -203,7 +213,9 @@ public abstract class RepositoryModule {
 
 ### 1. Carga Inicial de Datos
 ```
-User abre app → MainActivity → Verifica auth → HomeFragment → ViewModel → Repository → API → Response → UI
+User abre app → MainActivity → Verifica auth → 
+  ├─ Si NO autenticado: LoginActivity → Email → OTP → JWT → MainActivity
+  └─ Si autenticado: HomeFragment → ViewModel → Repository → API → Response → UI
 ```
 
 ### 2. Interacción del Usuario

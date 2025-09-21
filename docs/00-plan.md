@@ -15,9 +15,11 @@
 
 ### Funcionalidades Implementadas (Según prompt_cursor_android.txt)
 
-1. **Autenticación por email + OTP** ✅
+1. **Autenticación por email + OTP** ✅ **COMPLETADO**
    - Endpoint: `POST /auth/login` y `POST /auth/validate`
    - Flujo: email → OTP → JWT → navegación a Main
+   - **Implementado**: LoginActivity con UI completa, validación de email/OTP, almacenamiento seguro de JWT
+   - **Funcionalidades**: Envío de OTP, validación, persistencia de sesión, logout automático
 
 2. **Perfil de usuario** ✅
    - Endpoints: `GET/PUT /auth/update/{id}`
@@ -158,7 +160,7 @@ ApiResult<T> {
 
 ## Próximos Pasos
 
-1. **Completar autenticación**: Implementar UI completa de login/registro
+1. ✅ **Completar autenticación**: **IMPLEMENTADO** - LoginActivity con OTP completo
 2. **Implementar reservas**: Conectar botón "Reservar" con API
 3. **Completar perfil**: UI para ver/editar datos del usuario
 4. **Completar historial**: Implementar filtros por fecha
@@ -174,9 +176,11 @@ ApiResult<T> {
 - ✅ Carga de datos desde API
 - ✅ Manejo de errores básico
 - ✅ Service y BroadcastReceiver funcionando
+- ✅ **Flujo completo de autenticación OTP** - LoginActivity → MainActivity
+- ✅ **Persistencia de sesión** - JWT almacenado en EncryptedSharedPreferences
+- ✅ **Validación de email/OTP** - Formularios con validación completa
 
 ### Pruebas Pendientes
-- ⏳ Flujo completo de autenticación
 - ⏳ Crear/cancelar reservas
 - ⏳ Filtros de clases
 - ⏳ Actualización de perfil

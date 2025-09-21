@@ -22,6 +22,20 @@ Content-Type: application/json
 "OTP enviado al correo."
 ```
 
+**Implementación Android**:
+```java
+// En RitmoFitApiService.java
+@POST("auth/login")
+@Headers("Content-Type: application/json")
+Call<ResponseBody> enviarOTP(@Body Map<String, String> body);
+
+// En AuthRepositoryImpl.java
+public LiveData<ApiResult<String>> enviarOTP(String email) {
+    // Maneja ResponseBody y extrae string content
+    // Configurado con Gson lenient para manejar respuestas de texto plano
+}
+```
+
 **Respuesta de Error (400)**:
 ```json
 "Email es requerido"
@@ -53,6 +67,21 @@ Content-Type: application/json
     "apellido": "Pérez"
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Implementación Android**:
+```java
+// En RitmoFitApiService.java
+@POST("auth/validate")
+@Headers("Content-Type: application/json")
+Call<Map<String, Object>> validarOTP(@Body Map<String, String> body);
+
+// En AuthRepositoryImpl.java
+public LiveData<ApiResult<UserDTO>> validarOTP(String email, String otp) {
+    // Extrae user y token de la respuesta
+    // Guarda JWT en EncryptedSharedPreferences
+    // Retorna UserDTO para la UI
 }
 ```
 
@@ -549,6 +578,32 @@ curl -X POST http://10.0.2.2:8080/catalogo/clases \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
   -H "Content-Type: application/json" \
   -d '{"pagina": 0, "tamanio": 10}'
+```
+
+### Flujo de Autenticación Android (IMPLEMENTADO)
+```java
+// 1. LoginActivity - Enviar OTP
+authRepository.enviarOTP(email).observe(this, result -> {
+    if (result instanceof ApiResult.Success) {
+        // Mostrar campos de OTP
+        showOtpFields();
+    }
+});
+
+// 2. LoginActivity - Validar OTP
+authRepository.validarOTP(email, otp).observe(this, result -> {
+    if (result instanceof ApiResult.Success) {
+        // JWT guardado automáticamente en EncryptedSharedPreferences
+        // Navegar a MainActivity
+        navigateToMain();
+    }
+});
+
+// 3. MainActivity - Verificar autenticación
+if (!authRepository.isUsuarioAutenticado()) {
+    // Redirigir a LoginActivity
+    startActivity(new Intent(this, LoginActivity.class));
+}
 ```
 
 ### Flujo de Reserva
