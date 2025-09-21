@@ -18,6 +18,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.ritmofit.app.MainActivity;
 import com.ritmofit.app.R;
 import com.ritmofit.app.data.dto.ApiResult;
+import com.ritmofit.app.data.dto.UserDTO;
 import com.ritmofit.app.data.repository.AuthRepository;
 
 import java.util.Map;
@@ -36,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     
     private TextInputLayout tilEmail, tilOtp;
     private TextInputEditText etEmail, etOtp;
-    private MaterialButton btnSendOtp, btnLogin;
+    private MaterialButton btnSendOtp, btnLogin, btnRegister;
     private ProgressBar progressBar;
     private TextView tvError;
     
@@ -59,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         etOtp = findViewById(R.id.et_otp);
         btnSendOtp = findViewById(R.id.btn_send_otp);
         btnLogin = findViewById(R.id.btn_login);
+        btnRegister = findViewById(R.id.btn_register);
         progressBar = findViewById(R.id.progress_bar);
         tvError = findViewById(R.id.tv_error);
     }
@@ -73,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         
         btnLogin.setOnClickListener(v -> validateOtp());
+        btnRegister.setOnClickListener(v -> goToRegister());
     }
     
     private void sendOtp() {
@@ -94,18 +97,22 @@ public class LoginActivity extends AppCompatActivity {
         showLoading(true);
         hideError();
         
-        authRepository.enviarOTP(email).observe(this, new Observer<ApiResult<String>>() {
+        authRepository.enviarOTP(email).observe(this, new Observer<ApiResult<Map<String, Object>>>() {
             @Override
-            public void onChanged(ApiResult<String> result) {
+            public void onChanged(ApiResult<Map<String, Object>> result) {
                 showLoading(false);
                 
                 if (result instanceof ApiResult.Success) {
+                    Map<String, Object> responseData = ((ApiResult.Success<Map<String, Object>>) result).getData();
+                    String message = (String) responseData.get("message");
+                    
+                    // Usuario existe: mostrar campos OTP
                     otpSent = true;
                     showOtpFields();
                     btnSendOtp.setText("Cambiar email");
-                    Toast.makeText(LoginActivity.this, "Código OTP enviado a tu email", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
                 } else if (result instanceof ApiResult.Error) {
-                    showError("Error al enviar OTP: " + ((ApiResult.Error<String>) result).getMessage());
+                    showError("Error: " + ((ApiResult.Error<Map<String, Object>>) result).getMessage());
                 }
             }
         });
@@ -148,6 +155,11 @@ public class LoginActivity extends AppCompatActivity {
     private void showOtpFields() {
         tilOtp.setVisibility(View.VISIBLE);
         btnLogin.setVisibility(View.VISIBLE);
+    }
+    
+    private void goToRegister() {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
     }
     
     private void resetForm() {

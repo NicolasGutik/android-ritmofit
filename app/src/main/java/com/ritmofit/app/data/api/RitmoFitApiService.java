@@ -18,7 +18,7 @@ public interface RitmoFitApiService {
      */
     @POST("auth/login")
     @Headers("Content-Type: application/json")
-    Call<ResponseBody> enviarOTP(@Body Map<String, String> body);
+    Call<Map<String, Object>> enviarOTP(@Body Map<String, String> body);
     
     /**
      * Valida OTP y obtiene JWT
@@ -34,7 +34,7 @@ public interface RitmoFitApiService {
      */
     @POST("auth/register")
     @Headers("Content-Type: application/json")
-    Call<String> registrarUsuario(@Body UserDTO userDTO);
+    Call<Map<String, Object>> registrarUsuario(@Body UserDTO userDTO);
     
     /**
      * Actualiza datos del usuario

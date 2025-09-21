@@ -29,10 +29,15 @@
             </intent-filter>
         </activity>
         
-        <!-- LoginActivity para autenticación -->
-        <activity
-            android:name=".auth.ui.LoginActivity"
-            android:exported="false" />
+            <!-- LoginActivity para autenticación -->
+            <activity
+                android:name=".auth.ui.LoginActivity"
+                android:exported="false" />
+            
+            <!-- RegisterActivity para registro -->
+            <activity
+                android:name=".auth.ui.RegisterActivity"
+                android:exported="false" />
         
         <!-- SyncService para precargar datos -->
         <service

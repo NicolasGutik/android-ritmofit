@@ -12,17 +12,17 @@ public interface AuthRepository {
     /**
      * Envía OTP al email del usuario
      */
-    LiveData<ApiResult<String>> enviarOTP(String email);
+    LiveData<ApiResult<Map<String, Object>>> enviarOTP(String email);
     
     /**
      * Valida OTP y obtiene JWT
      */
     LiveData<ApiResult<Map<String, Object>>> validarOTP(String email, String otp);
     
-    /**
-     * Registra un nuevo usuario
-     */
-    LiveData<ApiResult<String>> registrarUsuario(UserDTO userDTO);
+        /**
+         * Registra un nuevo usuario
+         */
+        LiveData<ApiResult<Map<String, Object>>> registrarUsuario(UserDTO userDTO);
     
     /**
      * Actualiza datos del usuario
