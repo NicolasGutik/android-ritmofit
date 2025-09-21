@@ -12,3 +12,5 @@ public class RitmoFitApplication extends Application {
         super.onCreate();
     }
 }
+
+

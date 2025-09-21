@@ -33,3 +33,5 @@ public abstract class RepositoryModule {
     @Singleton
     public abstract ReservaRepository bindReservaRepository(ReservaRepositoryImpl reservaRepositoryImpl);
 }
+
+

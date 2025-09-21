@@ -509,3 +509,4 @@ La implementación de seguridad sigue las mejores prácticas de Android:
 6. **Logging seguro** sin datos sensibles
 
 La aplicación está preparada para producción con configuraciones adicionales de Certificate Pinning, Root Detection y App Integrity Verification.
+

@@ -34,3 +34,4 @@ public class DetalleClaseViewModel extends ViewModel {
         result.observeForever(apiResult -> clase.setValue(apiResult));
     }
 }
+

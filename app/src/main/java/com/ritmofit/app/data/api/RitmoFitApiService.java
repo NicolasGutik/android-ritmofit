@@ -131,3 +131,5 @@ public interface RitmoFitApiService {
     @GET("clasificacion/{email}")
     Call<List<Object>> obtenerClasificacionesPorUsuario(@Path("email") String email);
 }
+
+

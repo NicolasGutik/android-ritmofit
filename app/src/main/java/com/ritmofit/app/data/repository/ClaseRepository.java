@@ -41,3 +41,5 @@ public interface ClaseRepository {
      */
     LiveData<ApiResult<Integer>> contarTurnosConfirmados(Long claseId);
 }
+
+

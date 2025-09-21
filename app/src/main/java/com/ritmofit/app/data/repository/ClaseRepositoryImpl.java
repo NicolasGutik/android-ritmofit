@@ -185,3 +185,4 @@ public class ClaseRepositoryImpl implements ClaseRepository {
         return result;
     }
 }
+

@@ -335,3 +335,4 @@ public class AppEventsReceiver extends BroadcastReceiver {
 - **Caching**: HTTP cache + local cache
 - **Analytics**: Firebase Analytics
 - **Crash Reporting**: Firebase Crashlytics
+

@@ -45,15 +45,16 @@
 
 ## Decisiones Técnicas
 
-### Branch Base Elegida
-**Proyecto**: `mobile-practices-android-class-storage`
+### Proyecto Base
+**Proyecto**: Desarrollado desde cero para RitmoFit
 **Justificación**:
-- Ya tenía Hilt configurado
-- Retrofit + OkHttp implementados
-- Navigation Component configurado
-- EncryptedSharedPreferences listo
-- Arquitectura de capas (data/, ui/, di/) establecida
-- Estructura similar a lo requerido
+- Implementación completa desde cero
+- Arquitectura moderna con Hilt
+- Retrofit + OkHttp para networking
+- Navigation Component para navegación
+- EncryptedSharedPreferences para seguridad
+- Arquitectura de capas (data/, ui/, di/) bien definida
+- Estructura optimizada para RitmoFit
 
 ### Arquitectura Implementada
 
@@ -184,3 +185,4 @@ ApiResult<T> {
 ## Conclusión
 
 La primera entrega está **funcionalmente completa** según los requisitos del prompt. Se implementaron las funcionalidades 1, 2, 4, 5 y 8 con la arquitectura y tecnologías solicitadas. El proyecto mantiene la estructura y estilo del profesor, se conecta a la API real, y demuestra todos los conceptos Android requeridos.
+

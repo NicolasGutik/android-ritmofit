@@ -358,3 +358,4 @@ El proyecto está configurado para desarrollo local con conexión al backend en 
 4. **Probar**: Usar datos de prueba para verificar funcionalidades
 
 La app está lista para desarrollo y testing local, con configuración preparada para producción futura.
+

@@ -577,3 +577,4 @@ curl -X GET http://10.0.2.2:8080/api/reservas/mias \
 5. **Seguridad**: Los usuarios solo pueden ver/modificar sus propios datos
 6. **Timeouts**: Requests timeout después de 30 segundos
 7. **CORS**: Configurado para desarrollo local
+

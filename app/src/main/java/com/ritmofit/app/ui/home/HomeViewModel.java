@@ -52,3 +52,4 @@ public class HomeViewModel extends ViewModel {
         result.observeForever(apiResult -> clases.setValue(apiResult));
     }
 }
+
