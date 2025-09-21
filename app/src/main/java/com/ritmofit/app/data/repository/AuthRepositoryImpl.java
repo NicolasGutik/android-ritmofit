@@ -40,31 +40,27 @@ public class AuthRepositoryImpl implements AuthRepository {
     }
     
     @Override
-    public LiveData<ApiResult<String>> enviarOTP(String email) {
-        MutableLiveData<ApiResult<String>> result = new MutableLiveData<>();
+    public LiveData<ApiResult<Map<String, Object>>> enviarOTP(String email) {
+        MutableLiveData<ApiResult<Map<String, Object>>> result = new MutableLiveData<>();
         result.setValue(new ApiResult.Loading<>());
         
         Map<String, String> body = new HashMap<>();
         body.put("email", email);
         
-        apiService.enviarOTP(body).enqueue(new Callback<okhttp3.ResponseBody>() {
+        apiService.enviarOTP(body).enqueue(new Callback<Map<String, Object>>() {
             @Override
-            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseString = response.body().string();
-                        result.setValue(new ApiResult.Success<>(responseString));
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error reading response body", e);
-                        result.setValue(new ApiResult.Error<>("Error al procesar respuesta"));
-                    }
+                    Map<String, Object> responseData = response.body();
+                    Log.d(TAG, "🔍 Respuesta del servidor: " + responseData);
+                    result.setValue(new ApiResult.Success<>(responseData));
                 } else {
-                    result.setValue(new ApiResult.Error<>("Error al enviar OTP: " + response.code()));
+                    result.setValue(new ApiResult.Error<>("Error al procesar solicitud: " + response.code()));
                 }
             }
             
             @Override
-            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
                 Log.e(TAG, "Error al enviar OTP", t);
                 result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage(), t));
             }
@@ -127,27 +123,37 @@ public class AuthRepositoryImpl implements AuthRepository {
     }
     
     @Override
-    public LiveData<ApiResult<String>> registrarUsuario(UserDTO userDTO) {
-        MutableLiveData<ApiResult<String>> result = new MutableLiveData<>();
+    public LiveData<ApiResult<Map<String, Object>>> registrarUsuario(UserDTO userDTO) {
+        MutableLiveData<ApiResult<Map<String, Object>>> result = new MutableLiveData<>();
         result.setValue(new ApiResult.Loading<>());
-        
-        apiService.registrarUsuario(userDTO).enqueue(new Callback<String>() {
+
+        apiService.registrarUsuario(userDTO).enqueue(new Callback<Map<String, Object>>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    result.setValue(new ApiResult.Success<>(response.body()));
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Map<String, Object> responseData = response.body();
+                    Log.d(TAG, "🔍 Respuesta del registro: " + responseData);
+                    result.setValue(new ApiResult.Success<>(responseData));
                 } else {
-                    result.setValue(new ApiResult.Error<>("Error al registrar usuario: " + response.code()));
+                    String errorMessage = "Error al registrar usuario: " + response.code();
+                    if (response.errorBody() != null) {
+                        try {
+                            errorMessage = response.errorBody().string();
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error reading error body", e);
+                        }
+                    }
+                    result.setValue(new ApiResult.Error<>(errorMessage));
                 }
             }
-            
+
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
                 Log.e(TAG, "Error al registrar usuario", t);
                 result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage(), t));
             }
         });
-        
+
         return result;
     }
     
