@@ -41,12 +41,28 @@ public class ClaseRepositoryImpl implements ClaseRepository {
         MutableLiveData<ApiResult<RespuestaPaginadaDTO<ClaseDTO>>> result = new MutableLiveData<>();
         result.setValue(new ApiResult.Loading<>());
         
+        Log.d(TAG, "🔍 Enviando filtro: " + filtro.toString());
+        
         apiService.obtenerClases(filtro).enqueue(new Callback<RespuestaPaginadaDTO<ClaseDTO>>() {
             @Override
             public void onResponse(Call<RespuestaPaginadaDTO<ClaseDTO>> call, Response<RespuestaPaginadaDTO<ClaseDTO>> response) {
+                Log.d(TAG, "🔍 Respuesta del servidor - Código: " + response.code());
+                Log.d(TAG, "🔍 URL de la petición: " + call.request().url());
+                Log.d(TAG, "🔍 Headers enviados: " + call.request().headers());
+                
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "✅ Clases obtenidas exitosamente");
                     result.setValue(new ApiResult.Success<>(response.body()));
                 } else {
+                    Log.e(TAG, "❌ Error al obtener clases - Código: " + response.code());
+                    if (response.errorBody() != null) {
+                        try {
+                            String errorBody = response.errorBody().string();
+                            Log.e(TAG, "❌ Error body: " + errorBody);
+                        } catch (Exception e) {
+                            Log.e(TAG, "❌ Error al leer error body", e);
+                        }
+                    }
                     result.setValue(new ApiResult.Error<>("Error al obtener clases: " + response.code()));
                 }
             }

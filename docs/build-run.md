@@ -72,7 +72,7 @@ private static final String BASE_URL = "http://10.0.2.2:8080/";
 private static final String BASE_URL = "http://[TU_IP_LOCAL]:8080/";
 
 // Ejemplo:
-// private static final String BASE_URL = "http://192.168.1.100:8080/";
+// private static final String BASE_URL = "http://127.0.0.1:8080/";
 ```
 
 #### Encontrar IP Local
@@ -83,7 +83,7 @@ ipconfig
 # macOS/Linux
 ifconfig
 
-# Buscar la IP en la red local (ej: 192.168.1.100)
+# Buscar la IP en la red local (ej: http://127.0.0.1:8080/)
 ```
 
 ## Build del Proyecto
