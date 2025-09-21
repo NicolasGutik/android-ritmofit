@@ -6,6 +6,7 @@ import com.ritmofit.app.data.dto.ApiResult;
 import com.ritmofit.app.data.dto.ClaseDTO;
 import com.ritmofit.app.data.dto.FiltroClaseDTO;
 import com.ritmofit.app.data.dto.RespuestaPaginadaDTO;
+import com.ritmofit.app.data.dto.TurnoDTO;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public interface ClaseRepository {
     /**
      * Obtiene turnos de una clase específica
      */
-    LiveData<ApiResult<List<Object>>> obtenerTurnosPorClase(Long claseId);
+    LiveData<ApiResult<List<TurnoDTO>>> obtenerTurnosPorClase(Long claseId);
     
     /**
      * Obtiene número de turnos confirmados para una clase

@@ -11,6 +11,7 @@ import com.ritmofit.app.data.dto.ApiResult;
 import com.ritmofit.app.data.dto.ClaseDTO;
 import com.ritmofit.app.data.dto.FiltroClaseDTO;
 import com.ritmofit.app.data.dto.RespuestaPaginadaDTO;
+import com.ritmofit.app.data.dto.TurnoDTO;
 
 import java.util.List;
 
@@ -136,13 +137,13 @@ public class ClaseRepositoryImpl implements ClaseRepository {
     }
     
     @Override
-    public LiveData<ApiResult<List<Object>>> obtenerTurnosPorClase(Long claseId) {
-        MutableLiveData<ApiResult<List<Object>>> result = new MutableLiveData<>();
+    public LiveData<ApiResult<List<TurnoDTO>>> obtenerTurnosPorClase(Long claseId) {
+        MutableLiveData<ApiResult<List<TurnoDTO>>> result = new MutableLiveData<>();
         result.setValue(new ApiResult.Loading<>());
         
-        apiService.obtenerTurnosPorClase(claseId).enqueue(new Callback<List<Object>>() {
+        apiService.obtenerTurnosPorClase(claseId).enqueue(new Callback<List<TurnoDTO>>() {
             @Override
-            public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
+            public void onResponse(Call<List<TurnoDTO>> call, Response<List<TurnoDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     result.setValue(new ApiResult.Success<>(response.body()));
                 } else {
@@ -151,7 +152,7 @@ public class ClaseRepositoryImpl implements ClaseRepository {
             }
             
             @Override
-            public void onFailure(Call<List<Object>> call, Throwable t) {
+            public void onFailure(Call<List<TurnoDTO>> call, Throwable t) {
                 Log.e(TAG, "Error al obtener turnos", t);
                 result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage(), t));
             }

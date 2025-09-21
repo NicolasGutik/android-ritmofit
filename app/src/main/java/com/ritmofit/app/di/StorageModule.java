@@ -31,6 +31,7 @@ public class StorageModule {
                     KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT
             )
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
                     .setKeySize(256)
                     .build();
             

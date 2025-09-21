@@ -1,6 +1,7 @@
 package com.ritmofit.app.data.api;
 
 import com.ritmofit.app.data.dto.*;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -17,7 +18,7 @@ public interface RitmoFitApiService {
      */
     @POST("auth/login")
     @Headers("Content-Type: application/json")
-    Call<String> enviarOTP(@Body Map<String, String> body);
+    Call<ResponseBody> enviarOTP(@Body Map<String, String> body);
     
     /**
      * Valida OTP y obtiene JWT

@@ -47,18 +47,24 @@ public class AuthRepositoryImpl implements AuthRepository {
         Map<String, String> body = new HashMap<>();
         body.put("email", email);
         
-        apiService.enviarOTP(body).enqueue(new Callback<String>() {
+        apiService.enviarOTP(body).enqueue(new Callback<okhttp3.ResponseBody>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    result.setValue(new ApiResult.Success<>(response.body()));
+            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String responseString = response.body().string();
+                        result.setValue(new ApiResult.Success<>(responseString));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error reading response body", e);
+                        result.setValue(new ApiResult.Error<>("Error al procesar respuesta"));
+                    }
                 } else {
                     result.setValue(new ApiResult.Error<>("Error al enviar OTP: " + response.code()));
                 }
             }
             
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
                 Log.e(TAG, "Error al enviar OTP", t);
                 result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage(), t));
             }

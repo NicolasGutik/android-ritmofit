@@ -3,6 +3,8 @@ package com.ritmofit.app.di;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ritmofit.app.data.api.RitmoFitApiService;
 
 import java.util.concurrent.TimeUnit;
@@ -28,6 +30,14 @@ public class NetworkModule {
     private static final String TAG = "NetworkModule";
     private static final String BASE_URL = "http://10.0.2.2:8080/"; // Para emulador Android
     // Para dispositivo físico usar: "http://[TU_IP_LOCAL]:8080/"
+    
+    @Provides
+    @Singleton
+    public Gson provideGson() {
+        return new GsonBuilder()
+                .setLenient()
+                .create();
+    }
     
     @Provides
     @Singleton
@@ -64,11 +74,11 @@ public class NetworkModule {
     
     @Provides
     @Singleton
-    public Retrofit provideRetrofit(OkHttpClient okHttpClient) {
+    public Retrofit provideRetrofit(OkHttpClient okHttpClient, Gson gson) {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }
     
