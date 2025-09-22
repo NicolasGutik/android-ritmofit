@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.RitmoFit" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/ritmo_fit_primary</item>
+        <item name="colorPrimaryVariant">@color/ritmo_fit_primary_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/ritmo_fit_secondary</item>
+        <item name="colorOnSecondary">@android:color/black</item>
+    </style>
+
+    <style name="Theme.RitmoFit" parent="Base.Theme.RitmoFit" />
+</resources>
