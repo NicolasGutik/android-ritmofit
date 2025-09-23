@@ -115,7 +115,7 @@ public class AuthRepositoryImpl implements AuthRepository {
             @Override
             public void onFailure(Call<Map<String, Object>> call, Throwable t) {
                 Log.e(TAG, "Error al validar OTP", t);
-                result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage(), t));
+                result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage(),  t));
             }
         });
         
