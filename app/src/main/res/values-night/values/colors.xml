@@ -1,10 +1,4 @@
 <resources>
-    <!-- Éxito -->
-    <color name="success">#2E7D32</color> <!-- verde -->
-    <!-- Error -->
-    <color name="error">#B00020</color> <!-- rojo -->
-    <!-- Advertencia -->
-    <color name="warning">#F9A825</color> <!-- amarillo -->
     <color name="md_theme_primary">#6D5E0F</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#F8E287</color>

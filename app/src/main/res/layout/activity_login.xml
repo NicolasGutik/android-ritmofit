@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorBackgroundFloating"
     android:fillViewport="true"
     tools:context=".auth.ui.LoginActivity">
 
@@ -20,7 +21,7 @@
             android:text="RitmoFit"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="@color/ritmo_fit_primary"
+            android:textColor="?attr/colorPrimary"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +50,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:startIconDrawable="@android:drawable/ic_dialog_email"
-            app:boxStrokeColor="@color/ritmo_fit_primary">
+            app:boxStrokeColor="?attr/colorPrimary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_email"
@@ -71,7 +72,7 @@
             app:layout_constraintTop_toBottomOf="@id/til_email"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:backgroundTint="@color/ritmo_fit_primary" />
+            app:backgroundTint="?attr/colorPrimary" />
 
         <!-- Register Button (always visible) -->
         <com.google.android.material.button.MaterialButton
@@ -81,7 +82,7 @@
             android:layout_marginTop="16dp"
             android:text="¿No tienes cuenta? Regístrate"
             android:textSize="14sp"
-            android:textColor="@color/ritmo_fit_primary"
+            android:textColor="?attr/colorPrimary"
             app:layout_constraintTop_toBottomOf="@id/btn_send_otp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +100,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:startIconDrawable="@android:drawable/ic_lock_lock"
-            app:boxStrokeColor="@color/ritmo_fit_primary">
+            app:boxStrokeColor="?attr/colorPrimary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_otp"
@@ -123,7 +124,7 @@
             app:layout_constraintTop_toBottomOf="@id/til_otp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:backgroundTint="@color/ritmo_fit_primary" />
+            app:backgroundTint="?attr/colorPrimary" />
 
         <!-- Loading Progress -->
         <ProgressBar

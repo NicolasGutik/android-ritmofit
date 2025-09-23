@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".auth.ui.RegisterActivity">
+    android:background="?attr/colorBackgroundFloating"
+    tools:context=".auth.ui.RegisterActivity"
+    tools:theme="@style/Theme.RitmoFit">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,7 +22,7 @@
             android:text="RitmoFit"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="@color/ritmo_fit_primary"
+            android:textColor="?attr/colorPrimary"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +34,7 @@
             android:layout_height="wrap_content"
             android:text="Crea tu cuenta"
             android:textSize="16sp"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +51,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:startIconDrawable="@android:drawable/ic_dialog_email"
-            app:boxStrokeColor="@color/ritmo_fit_primary">
+            app:boxStrokeColor="?attr/colorPrimary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_email"
@@ -57,7 +59,6 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:maxLines="1" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- First Name Input -->
@@ -71,7 +72,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:startIconDrawable="@android:drawable/ic_menu_edit"
-            app:boxStrokeColor="@color/ritmo_fit_primary">
+            app:boxStrokeColor="?attr/colorPrimary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_first_name"
@@ -79,7 +80,6 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:maxLines="1" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Last Name Input -->
@@ -93,7 +93,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:startIconDrawable="@android:drawable/ic_menu_edit"
-            app:boxStrokeColor="@color/ritmo_fit_primary">
+            app:boxStrokeColor="?attr/colorPrimary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_last_name"
@@ -101,35 +101,36 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:maxLines="1" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Register Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_register"
+            style="@style/Widget.Material3.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Registrarse"
             android:textSize="16sp"
+            android:textColor="?attr/colorOnPrimary"
+            app:backgroundTint="?attr/colorPrimary"
             app:layout_constraintTop_toBottomOf="@id/til_last_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:backgroundTint="@color/ritmo_fit_primary" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Back to Login Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_back_to_login"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="¿Ya tienes cuenta? Inicia sesión"
             android:textSize="14sp"
-            android:textColor="@color/ritmo_fit_primary"
+            android:textColor="?attr/colorPrimary"
             app:layout_constraintTop_toBottomOf="@id/btn_register"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            style="@style/Widget.Material3.Button.TextButton" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Loading Progress -->
         <ProgressBar
@@ -156,5 +157,5 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>
+
