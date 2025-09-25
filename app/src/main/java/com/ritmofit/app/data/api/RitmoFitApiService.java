@@ -49,7 +49,10 @@ public interface RitmoFitApiService {
      * GET /auth/{id}
      */
     @GET("auth/{id}")
-    Call<UserResponse> obtenerUsuario(@Path("id") Long id);
+    Call<UserResponse> obtenerUsuario(
+            @Path("id") Long id,
+            @Header("Authorization") String bearer
+    );
 
     // ========== CATÁLOGO DE CLASES ==========
 

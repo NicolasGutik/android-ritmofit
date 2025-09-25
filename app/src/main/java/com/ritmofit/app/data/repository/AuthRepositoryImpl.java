@@ -189,21 +189,44 @@ public class AuthRepositoryImpl implements AuthRepository {
     public LiveData<ApiResult<UserResponse>> obtenerUsuario(Long id) {
         MutableLiveData<ApiResult<UserResponse>> liveData = new MutableLiveData<>();
 
-        apiService.obtenerUsuario(id).enqueue(new Callback<UserResponse>() {
-            @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    liveData.postValue(new ApiResult.Success<>(response.body()));
-                } else {
-                    liveData.postValue(new ApiResult.Error<>("Error al obtener usuario"));
-                }
-            }
+        String token = obtenerToken(); // desde EncryptedPrefs
+        if (token == null || token.isEmpty()) {
+            liveData.postValue(new ApiResult.Error<>("No hay sesión activa"));
+            return liveData;
+        }
 
-            @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
-                liveData.postValue(new ApiResult.Error<>(t.getMessage()));
-            }
-        });
+        Log.d("AuthRepository", "➡️ GET /auth/" + id);
+        Log.d("AuthRepository", "➡️ Auth header: Bearer " +
+                (token.length() > 10 ? token.substring(0,10) + "..." : token));
+
+        apiService.obtenerUsuario(id, "Bearer " + token)
+                .enqueue(new Callback<UserResponse>() {
+                    @Override
+                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                        Log.d("AuthRepository", "⬅️ response code: " + response.code());
+                        if (!response.isSuccessful()) {
+                            try {
+                                String err = response.errorBody() != null ? response.errorBody().string() : "(sin body)";
+                                Log.e("AuthRepository", "❌ errorBody: " + err);
+                            } catch (Exception ignore) {}
+                            liveData.postValue(new ApiResult.Error<>("Error al obtener usuario: " + response.code()));
+                            return;
+                        }
+                        UserResponse body = response.body();
+                        Log.d("AuthRepository", "✅ body: " + (body != null ? body.toString() : "null"));
+                        if (body != null) {
+                            liveData.postValue(new ApiResult.Success<>(body));
+                        } else {
+                            liveData.postValue(new ApiResult.Error<>("Respuesta vacía"));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserResponse> call, Throwable t) {
+                        Log.e("AuthRepository", "❌ onFailure: " + t.getMessage(), t);
+                        liveData.postValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage()));
+                    }
+                });
 
         return liveData;
     }
@@ -246,7 +269,7 @@ public class AuthRepositoryImpl implements AuthRepository {
                 .putString(KEY_USER_DATA, userJson)
                 .apply();
     }
-    
+
     @Override
     public UserDTO obtenerUsuarioGuardado() {
         String userJson = encryptedPrefs.getString(KEY_USER_DATA, null);
