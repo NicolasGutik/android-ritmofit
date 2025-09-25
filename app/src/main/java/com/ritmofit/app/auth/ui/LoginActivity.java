@@ -1,6 +1,7 @@
 package com.ritmofit.app.auth.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -141,7 +142,18 @@ public class LoginActivity extends AppCompatActivity {
                 showLoading(false);
                 
                 if (result instanceof ApiResult.Success) {
-                    // Login exitoso, navegar a MainActivity
+                    Map<String, Object> responseData = ((ApiResult.Success<Map<String, Object>>) result).getData();
+
+                    //  el backend devuelve "token" y "userId" y lo guardar en SharedPreferences
+                    String token = (String) responseData.get("token");
+                    String userId = String.valueOf(responseData.get("userId"));
+
+                    SharedPreferences prefs = getSharedPreferences("auth_prefs", MODE_PRIVATE);
+                    prefs.edit()
+                            .putString("jwt_token", token)
+                            .putString("user_id", userId)
+                            .apply();
+
                     Toast.makeText(LoginActivity.this, "¡Bienvenido a RitmoFit!", Toast.LENGTH_SHORT).show();
                     navigateToMain();
                 } else if (result instanceof ApiResult.Error) {

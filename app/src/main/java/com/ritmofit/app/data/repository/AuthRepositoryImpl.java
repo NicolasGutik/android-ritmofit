@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.ritmofit.app.data.api.RitmoFitApiService;
 import com.ritmofit.app.data.dto.ApiResult;
 import com.ritmofit.app.data.dto.UserDTO;
+import com.ritmofit.app.data.dto.UserResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -183,21 +184,31 @@ public class AuthRepositoryImpl implements AuthRepository {
         
         return result;
     }
-    
+
     @Override
-    public LiveData<ApiResult<UserDTO>> obtenerUsuarioActual() {
-        MutableLiveData<ApiResult<UserDTO>> result = new MutableLiveData<>();
-        
-        UserDTO usuario = obtenerUsuarioGuardado();
-        if (usuario != null) {
-            result.setValue(new ApiResult.Success<>(usuario));
-        } else {
-            result.setValue(new ApiResult.Error<>("Usuario no encontrado"));
-        }
-        
-        return result;
+    public LiveData<ApiResult<UserResponse>> obtenerUsuario(Long id) {
+        MutableLiveData<ApiResult<UserResponse>> liveData = new MutableLiveData<>();
+
+        apiService.obtenerUsuario(id).enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    liveData.postValue(new ApiResult.Success<>(response.body()));
+                } else {
+                    liveData.postValue(new ApiResult.Error<>("Error al obtener usuario"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                liveData.postValue(new ApiResult.Error<>(t.getMessage()));
+            }
+        });
+
+        return liveData;
     }
-    
+
+
     @Override
     public boolean isUsuarioAutenticado() {
         String token = obtenerToken();

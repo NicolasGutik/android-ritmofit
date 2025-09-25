@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 
 import com.ritmofit.app.data.dto.ApiResult;
 import com.ritmofit.app.data.dto.UserDTO;
+import com.ritmofit.app.data.dto.UserResponse;
 
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public interface AuthRepository {
     /**
      * Obtiene el usuario actual
      */
-    LiveData<ApiResult<UserDTO>> obtenerUsuarioActual();
+    LiveData<ApiResult<UserResponse>> obtenerUsuario(Long id);
     
     /**
      * Verifica si el usuario está autenticado
