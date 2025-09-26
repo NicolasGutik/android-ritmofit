@@ -34,6 +34,22 @@
     <string name="detalle_button_sin_cupos">Sin cupos</string>
     <string name="detalle_ubicacion_error">No se pudo generar la ubicación de esta clase</string>
     
+    <!-- Filtros Home -->
+    <string name="home_button_filtro">Filtrar</string>
+    <string name="home_button_filtro_applied">Editar filtros</string>
+    <string name="home_filters_summary_default">Sin filtros aplicados</string>
+    <string name="home_filter_dialog_title">Filtrar clases</string>
+    <string name="home_filter_disciplina_hint">Disciplina</string>
+    <string name="home_filter_sede_hint">Sede</string>
+    <string name="home_filter_fecha_label">Fecha específica</string>
+    <string name="home_filter_fecha_button">Elegir fecha</string>
+    <string name="home_filter_fecha_clear">Limpiar fecha</string>
+    <string name="home_filter_fecha_none">Sin fecha seleccionada</string>
+    <string name="home_filter_apply">Aplicar</string>
+    <string name="home_filter_reset">Limpiar filtros</string>
+    <string name="home_filter_option_all">Todas</string>
+    <string name="home_filter_fecha_picker_title">Seleccionar fecha</string>
+    
     <!-- Errores -->
     <string name="error_network">Error de conexión</string>
     <string name="error_loading">Cargando...</string>
