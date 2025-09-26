@@ -38,12 +38,6 @@
             <activity
                 android:name=".auth.ui.RegisterActivity"
                 android:exported="false" />
-            
-            <!-- AsistenciasActivity para historial de asistencias -->
-            <activity
-                android:name=".ui.asistencias.AsistenciasActivity"
-                android:exported="false"
-                android:parentActivityName=".MainActivity" />
         
         <!-- SyncService para precargar datos -->
         <service

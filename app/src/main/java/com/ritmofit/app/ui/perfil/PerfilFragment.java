@@ -1,6 +1,5 @@
 package com.ritmofit.app.ui.perfil;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +9,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.ritmofit.app.R;
-import com.ritmofit.app.ui.asistencias.AsistenciasActivity;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -27,8 +26,7 @@ public class PerfilFragment extends Fragment {
         
         // Configurar botón para ver asistencias
         view.findViewById(R.id.btnVerAsistencias).setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), AsistenciasActivity.class);
-            startActivity(intent);
+            Navigation.findNavController(view).navigate(R.id.asistenciasFragment);
         });
         
         // TODO: Implementar funcionalidad completa del perfil
