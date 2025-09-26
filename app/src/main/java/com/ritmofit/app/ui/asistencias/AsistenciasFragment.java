@@ -11,12 +11,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.ritmofit.app.R;
 import com.ritmofit.app.data.dto.AsistenciaDTO;
+import com.ritmofit.app.data.dto.UserDTO;
+import com.ritmofit.app.data.repository.AuthRepository;
 import com.ritmofit.app.ui.adapters.AsistenciaAdapter;
 
 import java.text.SimpleDateFormat;
@@ -24,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -41,6 +46,11 @@ public class AsistenciasFragment extends Fragment {
     private Calendar fechaHasta = Calendar.getInstance();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     
+    private AsistenciasViewModel viewModel;
+    
+    @Inject
+    AuthRepository authRepository;
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, 
@@ -50,8 +60,9 @@ public class AsistenciasFragment extends Fragment {
         // Inicializar componentes
         initializeViews(view);
         setupRecyclerView();
+        setupViewModel();
         setupDateFilter();
-        loadDummyData();
+        loadInitialData();
         
         return view;
     }
@@ -68,6 +79,30 @@ public class AsistenciasFragment extends Fragment {
         adapter = new AsistenciaAdapter();
         recyclerViewAsistencias.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewAsistencias.setAdapter(adapter);
+    }
+    
+    private void setupViewModel() {
+        viewModel = new ViewModelProvider(this).get(AsistenciasViewModel.class);
+        
+        // Observar cambios en las asistencias
+        viewModel.asistencias.observe(getViewLifecycleOwner(), asistencias -> {
+            if (asistencias != null) {
+                adapter.updateAsistencias(asistencias);
+                updateEmptyState(asistencias.isEmpty());
+            }
+        });
+        
+        // Observar estado de carga
+        viewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
+            // TODO: Mostrar/ocultar indicador de carga si es necesario
+        });
+        
+        // Observar errores
+        viewModel.error.observe(getViewLifecycleOwner(), error -> {
+            if (error != null) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+            }
+        });
     }
     
     private void setupDateFilter() {
@@ -136,25 +171,30 @@ public class AsistenciasFragment extends Fragment {
     }
     
     private void applyFilters() {
-        // TODO: Aquí implementarás la llamada al GET con los filtros
-        // Por ahora solo mostramos un mensaje
         String fechaDesdeStr = dateFormat.format(fechaDesde.getTime());
         String fechaHastaStr = dateFormat.format(fechaHasta.getTime());
         
-        Toast.makeText(getContext(), 
-            "Filtrando desde " + fechaDesdeStr + " hasta " + fechaHastaStr, 
-            Toast.LENGTH_SHORT).show();
-        
-        // Aquí en el futuro harás la llamada a la API
+        // Obtener usuario actual
+        UserDTO usuario = authRepository.obtenerUsuarioGuardado();
+        if (usuario != null && usuario.getId() != null) {
+            viewModel.obtenerAsistenciasConFiltro(usuario.getId(), fechaDesdeStr, fechaHastaStr);
+        } else {
+            Toast.makeText(getContext(), "Error: Usuario no encontrado", Toast.LENGTH_SHORT).show();
+        }
     }
     
-    private void loadDummyData() {
-        // Lista vacía - sin datos de prueba
-        List<AsistenciaDTO> asistencias = new ArrayList<>();
-        adapter.updateAsistencias(asistencias);
-        
-        // Mostrar mensaje de lista vacía
-        if (asistencias.isEmpty()) {
+    private void loadInitialData() {
+        // Cargar asistencias iniciales (sin filtro)
+        UserDTO usuario = authRepository.obtenerUsuarioGuardado();
+        if (usuario != null && usuario.getId() != null) {
+            viewModel.obtenerAsistencias(usuario.getId());
+        } else {
+            Toast.makeText(getContext(), "Error: Usuario no encontrado", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    private void updateEmptyState(boolean isEmpty) {
+        if (isEmpty) {
             recyclerViewAsistencias.setVisibility(View.GONE);
             textViewEmpty.setVisibility(View.VISIBLE);
         } else {

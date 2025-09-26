@@ -34,7 +34,7 @@
                 android:id="@+id/textViewEstado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CONFIRMADA"
+                android:text="Asistió"
                 android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
                 android:textColor="@color/success"
                 android:textStyle="bold" />
@@ -76,7 +76,7 @@
 
         </LinearLayout>
 
-        <!-- Fechas -->
+        <!-- Fecha de clase -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -86,57 +86,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="Fecha de clase"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="@color/gray_medium"
+                android:layout_marginBottom="2dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Fecha de clase"
-                    android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-                    android:textColor="@color/gray_medium"
-                    android:layout_marginBottom="2dp" />
-
-                <TextView
-                    android:id="@+id/textViewFechaClase"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="25/09/2025 18:00"
-                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                    android:textColor="@color/gray_dark"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/textViewFechaClase"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Fecha de asistencia"
-                    android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-                    android:textColor="@color/gray_medium"
-                    android:layout_marginBottom="2dp" />
-
-                <TextView
-                    android:id="@+id/textViewFechaAsistencia"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="25/09/2025 18:05"
-                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                    android:textColor="@color/gray_dark"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
+                android:text="2025-10-05"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textColor="@color/gray_dark"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

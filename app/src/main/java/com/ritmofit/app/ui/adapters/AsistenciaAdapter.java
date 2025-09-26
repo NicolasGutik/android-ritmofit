@@ -11,8 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ritmofit.app.R;
 import com.ritmofit.app.data.dto.AsistenciaDTO;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AsistenciaAdapter extends RecyclerView.Adapter<AsistenciaAdapter.AsistenciaViewHolder> {
     
@@ -49,7 +53,6 @@ public class AsistenciaAdapter extends RecyclerView.Adapter<AsistenciaAdapter.As
         private TextView textViewLugar;
         private TextView textViewProfesor;
         private TextView textViewFechaClase;
-        private TextView textViewFechaAsistencia;
         private TextView textViewEstado;
         
         public AsistenciaViewHolder(@NonNull View itemView) {
@@ -59,18 +62,28 @@ public class AsistenciaAdapter extends RecyclerView.Adapter<AsistenciaAdapter.As
             textViewLugar = itemView.findViewById(R.id.textViewLugar);
             textViewProfesor = itemView.findViewById(R.id.textViewProfesor);
             textViewFechaClase = itemView.findViewById(R.id.textViewFechaClase);
-            textViewFechaAsistencia = itemView.findViewById(R.id.textViewFechaAsistencia);
             textViewEstado = itemView.findViewById(R.id.textViewEstado);
         }
         
         public void bind(AsistenciaDTO asistencia) {
-            textViewDisciplina.setText(asistencia.getDisciplina());
-            textViewSede.setText(asistencia.getSede());
-            textViewLugar.setText(asistencia.getLugar());
-            textViewProfesor.setText(asistencia.getProfesor());
-            textViewFechaClase.setText(asistencia.getFechaClase());
-            textViewFechaAsistencia.setText(asistencia.getFechaAsistencia());
-            textViewEstado.setText(asistencia.getEstado());
+            textViewDisciplina.setText(asistencia.getClaseDisciplina());
+            textViewSede.setText(asistencia.getClaseSede());
+            textViewLugar.setText("Sala Principal"); // Valor por defecto
+            textViewProfesor.setText("Profesor"); // Valor por defecto
+            textViewFechaClase.setText(formatFechaSolo(asistencia.getClaseFecha()));
+            textViewEstado.setText("Asistió");
+            textViewEstado.setTextColor(itemView.getContext().getColor(R.color.success));
+        }
+        
+        private String formatFechaSolo(String fechaISO) {
+            try {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                Date date = inputFormat.parse(fechaISO);
+                return outputFormat.format(date);
+            } catch (ParseException e) {
+                return fechaISO; // Si no se puede parsear, devolver la fecha original
+            }
         }
     }
 }
