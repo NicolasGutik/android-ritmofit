@@ -48,7 +48,11 @@ public class PerfilFragment extends Fragment {
         // 1) Prefs únicas
         SharedPreferences prefs = requireContext()
                 .getSharedPreferences("auth_prefs", Context.MODE_PRIVATE);
-
+        Log.d("Perfil", "prefs: " +
+                prefs.getString("email", "∅") + " | " +
+                prefs.getString("nombre", "∅") + " | " +
+                prefs.getString("apellido", "∅") + " | " +
+                prefs.getString("telefono", "∅"));
         // 2) Rellenar inputs SOLO si hay valores guardados
         String email    = prefs.getString("email", "");
         String nombre   = prefs.getString("nombre", "");

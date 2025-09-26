@@ -148,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
                     String token = (String) responseData.get("token");
                     String userId = String.valueOf(responseData.get("userId"));
 
-                    // 👇 Nuevos campos que ya devuelve tu API
+                    // Nuevos campos que ya devuelve tu API
                     String firstName = (String) responseData.get("firstName");
                     String lastName  = (String) responseData.get("lastName");
                     String emailResp = (String) responseData.get("email");
