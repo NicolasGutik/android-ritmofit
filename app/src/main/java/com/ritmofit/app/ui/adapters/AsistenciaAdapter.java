@@ -50,8 +50,6 @@ public class AsistenciaAdapter extends RecyclerView.Adapter<AsistenciaAdapter.As
         
         private TextView textViewDisciplina;
         private TextView textViewSede;
-        private TextView textViewLugar;
-        private TextView textViewProfesor;
         private TextView textViewFechaClase;
         private TextView textViewEstado;
         
@@ -59,8 +57,6 @@ public class AsistenciaAdapter extends RecyclerView.Adapter<AsistenciaAdapter.As
             super(itemView);
             textViewDisciplina = itemView.findViewById(R.id.textViewDisciplina);
             textViewSede = itemView.findViewById(R.id.textViewSede);
-            textViewLugar = itemView.findViewById(R.id.textViewLugar);
-            textViewProfesor = itemView.findViewById(R.id.textViewProfesor);
             textViewFechaClase = itemView.findViewById(R.id.textViewFechaClase);
             textViewEstado = itemView.findViewById(R.id.textViewEstado);
         }
@@ -68,8 +64,6 @@ public class AsistenciaAdapter extends RecyclerView.Adapter<AsistenciaAdapter.As
         public void bind(AsistenciaDTO asistencia) {
             textViewDisciplina.setText(asistencia.getClaseDisciplina());
             textViewSede.setText(asistencia.getClaseSede());
-            textViewLugar.setText("Sala Principal"); // Valor por defecto
-            textViewProfesor.setText("Profesor"); // Valor por defecto
             textViewFechaClase.setText(formatFechaSolo(asistencia.getClaseFecha()));
             textViewEstado.setText("Asistió");
             textViewEstado.setTextColor(itemView.getContext().getColor(R.color.success));

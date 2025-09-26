@@ -57,23 +57,6 @@
                 android:textColor="@color/gray_dark"
                 android:layout_marginBottom="4dp" />
 
-            <TextView
-                android:id="@+id/textViewLugar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sala 1"
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                android:textColor="@color/gray_dark"
-                android:layout_marginBottom="4dp" />
-
-            <TextView
-                android:id="@+id/textViewProfesor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Prof. María García"
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                android:textColor="@color/gray_dark" />
-
         </LinearLayout>
 
         <!-- Fecha de clase -->

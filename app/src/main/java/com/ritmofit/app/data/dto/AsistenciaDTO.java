@@ -93,6 +93,4 @@ public class AsistenciaDTO {
     public String getDisciplina() { return claseDisciplina; }
     public String getSede() { return claseSede; }
     public String getFechaClase() { return claseFecha; }
-    public String getLugar() { return "Sala Principal"; } // Valor por defecto
-    public String getProfesor() { return "Profesor"; } // Valor por defecto
 }
