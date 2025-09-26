@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<com.google.android.material.card.MaterialCardView 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="0dp"
-    app:cardBackgroundColor="?attr/colorOnPrimaryFixedVariant"
-    app:strokeWidth="1dp"
-    app:strokeColor="?attr/colorOutline"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
@@ -28,7 +25,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/ritmo_fit_primary"
             tools:text="Yoga" />
 
         <!-- Sede -->
@@ -38,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="14sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textColor="@color/gray_dark"
             tools:text="Sede Norte" />
 
         <!-- Fecha -->
@@ -48,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="14sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textColor="@color/gray_dark"
             tools:text="15/01/2025 10:00" />
 
         <!-- Profesor -->
@@ -58,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="14sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textColor="@color/gray_dark"
             tools:text="Prof. María González" />
 
         <!-- Cupos -->
@@ -68,12 +65,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="12sp"
-            android:textColor="?attr/colorSecondary"
+            android:textColor="@color/ritmo_fit_secondary"
             android:textStyle="bold"
             tools:text="Cupos: 15/20" />
 
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
-
 

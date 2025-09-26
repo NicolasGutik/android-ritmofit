@@ -1,9 +1,9 @@
 package com.ritmofit.app.auth.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -140,30 +140,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onChanged(ApiResult<Map<String, Object>> result) {
                 showLoading(false);
-
+                
                 if (result instanceof ApiResult.Success) {
-                    Map<String, Object> responseData = ((ApiResult.Success<Map<String, Object>>) result).getData();
-
-                    // El backend devuelve "token", "userId" y además los datos del usuario
-                    String token = (String) responseData.get("token");
-                    String userId = String.valueOf(responseData.get("userId"));
-
-                    // Nuevos campos que ya devuelve tu API
-                    String firstName = (String) responseData.get("firstName");
-                    String lastName  = (String) responseData.get("lastName");
-                    String emailResp = (String) responseData.get("email");
-                    String telefono  = (String) responseData.get("telefono");
-
-                    SharedPreferences prefs = getSharedPreferences("auth_prefs", MODE_PRIVATE);
-                    prefs.edit()
-                            .putString("jwt_token", token)
-                            .putString("user_id", userId)
-                            .putString("nombre", firstName != null ? firstName : "")
-                            .putString("apellido", lastName != null ? lastName : "")
-                            .putString("email", emailResp != null ? emailResp : currentEmail) // fallback
-                            .putString("telefono", telefono != null ? telefono : "")
-                            .apply();
-
+                    // Login exitoso, navegar a MainActivity
                     Toast.makeText(LoginActivity.this, "¡Bienvenido a RitmoFit!", Toast.LENGTH_SHORT).show();
                     navigateToMain();
                 } else if (result instanceof ApiResult.Error) {

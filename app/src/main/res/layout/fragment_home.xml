@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorBackgroundFloating"
     android:padding="16dp"
     tools:context=".ui.home.HomeFragment">
 
@@ -16,7 +15,7 @@
         android:text="@string/clases_title"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="?attr/colorPrimary"
+        android:textColor="@color/ritmo_fit_primary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp" />
@@ -71,7 +70,7 @@
         android:layout_height="wrap_content"
         android:text="@string/empty_list"
         android:textSize="16sp"
-        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textColor="@color/gray_medium"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

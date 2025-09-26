@@ -11,14 +11,11 @@
         android:name="com.ritmofit.app.ui.home.HomeFragment"
         android:label="@string/nav_home"
         tools:layout="@layout/fragment_home">
-
+        
         <action
             android:id="@+id/action_home_to_detalle"
             app:destination="@id/detalleClaseFragment" />
-
-        <action
-            android:id="@+id/action_home_to_perfil"
-            app:destination="@id/perfilFragment" />
+            
     </fragment>
 
     <!-- Detalle Clase Fragment -->
@@ -53,15 +50,11 @@
         tools:layout="@layout/fragment_historial" />
 
     <!-- Perfil Fragment -->
-
-    <fragment android:id="@+id/perfilFragment"
+    <fragment
+        android:id="@+id/perfilFragment"
         android:name="com.ritmofit.app.ui.perfil.PerfilFragment"
         android:label="@string/nav_perfil"
-        tools:layout="@layout/fragment_perfil">
-        <argument
-            android:name="userId"
-            app:argType="long" />
-    </fragment>
+        tools:layout="@layout/fragment_perfil" />
 
 </navigation>
 
