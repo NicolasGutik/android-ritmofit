@@ -71,12 +71,21 @@ public class AsistenciaAdapter extends RecyclerView.Adapter<AsistenciaAdapter.As
         
         private String formatFechaSolo(String fechaISO) {
             try {
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+                // Formato de entrada: 2025-09-26T22:00:17.000+00:00
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault());
                 SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 Date date = inputFormat.parse(fechaISO);
                 return outputFormat.format(date);
             } catch (ParseException e) {
-                return fechaISO; // Si no se puede parsear, devolver la fecha original
+                // Si no se puede parsear, intentar con formato alternativo
+                try {
+                    SimpleDateFormat inputFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    Date date = inputFormat2.parse(fechaISO);
+                    return outputFormat.format(date);
+                } catch (ParseException e2) {
+                    return fechaISO; // Si no se puede parsear, devolver la fecha original
+                }
             }
         }
     }
