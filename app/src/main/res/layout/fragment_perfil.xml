@@ -31,19 +31,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Botón para ver asistencias -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnVerAsistencias"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Mis Asistencias"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        style="@style/Widget.Material3.Button.OutlinedButton" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 

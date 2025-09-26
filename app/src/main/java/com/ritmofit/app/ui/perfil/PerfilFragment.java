@@ -9,7 +9,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import com.ritmofit.app.R;
 
@@ -23,11 +22,6 @@ public class PerfilFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, 
                            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_perfil, container, false);
-        
-        // Configurar botón para ver asistencias
-        view.findViewById(R.id.btnVerAsistencias).setOnClickListener(v -> {
-            Navigation.findNavController(view).navigate(R.id.asistenciasFragment);
-        });
         
         // TODO: Implementar funcionalidad completa del perfil
         Toast.makeText(getContext(), "Perfil en desarrollo", Toast.LENGTH_SHORT).show();
