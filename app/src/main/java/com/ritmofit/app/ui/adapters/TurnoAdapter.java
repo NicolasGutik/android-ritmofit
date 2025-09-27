@@ -3,6 +3,7 @@ package com.ritmofit.app.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,8 @@ public class TurnoAdapter extends RecyclerView.Adapter<TurnoAdapter.TurnoViewHol
     
     public interface OnTurnoClickListener {
         void onTurnoClick(TurnoDTO turno);
+        void onCancelarClick(TurnoDTO turno);
+        void onConfirmarClick(TurnoDTO turno);
     }
     
     public TurnoAdapter(OnTurnoClickListener listener) {
@@ -62,6 +65,8 @@ public class TurnoAdapter extends RecyclerView.Adapter<TurnoAdapter.TurnoViewHol
         private TextView tvProfesor;
         private TextView tvFecha;
         private TextView tvEstado;
+        private ImageButton btnCancelar;
+        private ImageButton btnConfirmar;
         
         public TurnoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -71,11 +76,27 @@ public class TurnoAdapter extends RecyclerView.Adapter<TurnoAdapter.TurnoViewHol
             tvProfesor = itemView.findViewById(R.id.tv_profesor);
             tvFecha = itemView.findViewById(R.id.tv_fecha);
             tvEstado = itemView.findViewById(R.id.tv_estado);
+            btnCancelar = itemView.findViewById(R.id.btn_cancelar);
+            btnConfirmar = itemView.findViewById(R.id.btn_confirmar);
             
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION && listener != null) {
                     listener.onTurnoClick(turnos.get(position));
+                }
+            });
+            
+            btnCancelar.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onCancelarClick(turnos.get(position));
+                }
+            });
+            
+            btnConfirmar.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onConfirmarClick(turnos.get(position));
                 }
             });
         }
@@ -140,6 +161,16 @@ public class TurnoAdapter extends RecyclerView.Adapter<TurnoAdapter.TurnoViewHol
             } else {
                 tvEstado.setTextColor(itemView.getContext().getColor(R.color.warning));
             }
+            
+            // Mostrar/ocultar botones según el estado
+            boolean esConfirmado = turno.isConfirmado();
+            boolean esCancelado = turno.isCancelado();
+            
+            // Solo mostrar botones si la reserva no está confirmada ni cancelada
+            boolean mostrarBotones = !esConfirmado && !esCancelado;
+            
+            btnCancelar.setVisibility(mostrarBotones ? View.VISIBLE : View.GONE);
+            btnConfirmar.setVisibility(mostrarBotones ? View.VISIBLE : View.GONE);
         }
         
         private String formatearFecha(String fecha) {

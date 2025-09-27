@@ -110,18 +110,60 @@ public class MisReservasFragment extends Fragment {
     }
     
     private void setupRecyclerView() {
-        adapter = new TurnoAdapter(turno -> {
-            // Mostrar detalles de la reserva
-            String mensaje = String.format("Reserva ID: %d\nClase: %s\nFecha: %s\nEstado: %s", 
-                turno.getId(), 
-                turno.getDisciplina(), 
-                turno.getFechaClase(), 
-                turno.getEstado());
-            Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
+        adapter = new TurnoAdapter(new TurnoAdapter.OnTurnoClickListener() {
+            @Override
+            public void onTurnoClick(TurnoDTO turno) {
+                // Mostrar detalles de la reserva
+                String mensaje = String.format("Reserva ID: %d\nClase: %s\nFecha: %s\nEstado: %s", 
+                    turno.getId(), 
+                    turno.getDisciplina(), 
+                    turno.getFechaClase(), 
+                    turno.getEstado());
+                Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
+            }
+            
+            @Override
+            public void onCancelarClick(TurnoDTO turno) {
+                mostrarDialogoCancelar(turno);
+            }
+            
+            @Override
+            public void onConfirmarClick(TurnoDTO turno) {
+                mostrarDialogoConfirmar(turno);
+            }
         });
         
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+    }
+    
+    private void mostrarDialogoCancelar(TurnoDTO turno) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Cancelar Reserva")
+            .setMessage("¿Estás seguro de que quieres cancelar esta reserva?")
+            .setPositiveButton("Sí, Cancelar", (dialog, which) -> {
+                // Cancelar la reserva
+                viewModel.cancelarReserva(turno.getId());
+                Toast.makeText(getContext(), "Reserva cancelada exitosamente", Toast.LENGTH_SHORT).show();
+            })
+            .setNegativeButton("No", (dialog, which) -> {
+                dialog.dismiss();
+            })
+            .show();
+    }
+    
+    private void mostrarDialogoConfirmar(TurnoDTO turno) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Confirmar Reserva")
+            .setMessage("¿Quieres confirmar tu asistencia a esta clase?")
+            .setPositiveButton("Sí, Confirmar", (dialog, which) -> {
+                // TODO: Implementar confirmación de reserva
+                Toast.makeText(getContext(), "Funcionalidad de confirmación en desarrollo", Toast.LENGTH_SHORT).show();
+            })
+            .setNegativeButton("No", (dialog, which) -> {
+                dialog.dismiss();
+            })
+            .show();
     }
 }
 
