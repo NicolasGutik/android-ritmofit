@@ -65,6 +65,13 @@ public class MisReservasFragment extends Fragment {
         viewModel.cargarReservas();
     }
     
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refrescar reservas cuando se vuelve a la pantalla
+        viewModel.refrescarReservas();
+    }
+    
     private void handleReservasResult(ApiResult<List<TurnoDTO>> result) {
         if (result instanceof ApiResult.Loading) {
             showLoading(true);

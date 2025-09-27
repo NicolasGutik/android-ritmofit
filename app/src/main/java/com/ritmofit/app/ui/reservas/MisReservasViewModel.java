@@ -34,5 +34,9 @@ public class MisReservasViewModel extends ViewModel {
             reservas.setValue(apiResult);
         });
     }
+    
+    public void refrescarReservas() {
+        cargarReservas();
+    }
 }
 

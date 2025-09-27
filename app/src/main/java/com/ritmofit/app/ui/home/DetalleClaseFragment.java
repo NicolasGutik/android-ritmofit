@@ -68,6 +68,9 @@ public class DetalleClaseFragment extends Fragment {
             }
         });
         
+        // Observar cambios en la reserva
+        viewModel.getReserva().observe(getViewLifecycleOwner(), this::handleReservaResult);
+        
         // Cargar detalle de la clase
         if (claseId > 0) {
             viewModel.cargarDetalleClase(claseId);
@@ -76,8 +79,13 @@ public class DetalleClaseFragment extends Fragment {
     
     private void setupClickListeners() {
         binding.btnReservar.setOnClickListener(v -> {
-            // TODO: Implementar reserva
-            Toast.makeText(getContext(), "Funcionalidad de reserva en desarrollo", Toast.LENGTH_SHORT).show();
+            System.out.println("🔍 DetalleClaseFragment - Botón reservar presionado");
+            System.out.println("🔍 DetalleClaseFragment - claseId: " + claseId);
+            System.out.println("🔍 DetalleClaseFragment - viewModel: " + (viewModel != null ? "OK" : "NULL"));
+            
+            // Forzar que se ejecute la funcionalidad correcta
+            Toast.makeText(getContext(), "Ejecutando reserva...", Toast.LENGTH_SHORT).show();
+            mostrarDialogoConfirmacion();
         });
         
         binding.btnVerUbicacion.setOnClickListener(v -> {
@@ -134,6 +142,51 @@ public class DetalleClaseFragment extends Fragment {
             // Si no se puede parsear, devolver la fecha original
         }
         return fecha;
+    }
+    
+    private void mostrarDialogoConfirmacion() {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Confirmar Reserva")
+            .setMessage("¿Quieres confirmar la reserva?")
+            .setPositiveButton("Sí", (dialog, which) -> {
+                viewModel.crearReserva(claseId);
+            })
+            .setNegativeButton("Cancelar", (dialog, which) -> {
+                dialog.dismiss();
+            })
+            .show();
+    }
+    
+    private void handleReservaResult(com.ritmofit.app.data.dto.ApiResult<com.ritmofit.app.data.dto.TurnoDTO> result) {
+        if (result instanceof com.ritmofit.app.data.dto.ApiResult.Loading) {
+            // Mostrar loading si es necesario
+        } else if (result instanceof com.ritmofit.app.data.dto.ApiResult.Success) {
+            com.ritmofit.app.data.dto.ApiResult.Success<com.ritmofit.app.data.dto.TurnoDTO> success = 
+                (com.ritmofit.app.data.dto.ApiResult.Success<com.ritmofit.app.data.dto.TurnoDTO>) result;
+            Toast.makeText(getContext(), "¡Reserva creada exitosamente!", Toast.LENGTH_LONG).show();
+            
+            // Navegar a Mis Reservas
+            if (getActivity() != null) {
+                androidx.navigation.NavController navController = androidx.navigation.Navigation.findNavController(requireView());
+                navController.navigate(R.id.misReservasFragment);
+            }
+        } else if (result instanceof com.ritmofit.app.data.dto.ApiResult.Error) {
+            com.ritmofit.app.data.dto.ApiResult.Error<com.ritmofit.app.data.dto.TurnoDTO> error = 
+                (com.ritmofit.app.data.dto.ApiResult.Error<com.ritmofit.app.data.dto.TurnoDTO>) result;
+            
+            // Mostrar AlertDialog con el error específico
+            mostrarErrorReserva(error.getMessage());
+        }
+    }
+    
+    private void mostrarErrorReserva(String mensajeError) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Error al Reservar")
+            .setMessage(mensajeError)
+            .setPositiveButton("Entendido", (dialog, which) -> {
+                dialog.dismiss();
+            })
+            .show();
     }
 }
 
