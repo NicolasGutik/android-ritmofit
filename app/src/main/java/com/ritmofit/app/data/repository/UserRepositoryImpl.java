@@ -29,23 +29,23 @@ public class UserRepositoryImpl implements UserRepository {
     public LiveData<ApiResult<UserDTO>> getUserById(Long id) {
         MutableLiveData<ApiResult<UserDTO>> result = new MutableLiveData<>();
         result.setValue(new ApiResult.Loading<>());
+        
         api.obtenerUsuarioPorId(id).enqueue(new Callback<UserDTO>() {
             @Override
             public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     result.setValue(new ApiResult.Success<>(response.body()));
                 } else {
-                    String msg = "Error al obtener usuario";
-                    try { if (response.errorBody()!=null) msg = response.errorBody().string(); } catch (Exception ignored) {}
-                    result.setValue(new ApiResult.Error<>(msg));
+                    result.setValue(new ApiResult.Error<>("Error al obtener usuario"));
                 }
             }
 
             @Override
             public void onFailure(Call<UserDTO> call, Throwable t) {
-                result.setValue(new ApiResult.Error<>(t.getMessage()));
+                result.setValue(new ApiResult.Error<>("Error de conexión"));
             }
         });
+        
         return result;
     }
 
@@ -54,23 +54,22 @@ public class UserRepositoryImpl implements UserRepository {
         MutableLiveData<ApiResult<String>> result = new MutableLiveData<>();
         result.setValue(new ApiResult.Loading<>());
 
-        api.actualizarUsuario(id, user).enqueue(new Callback<String>() {
+        api.actualizarUsuario(id, user).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    result.setValue(new ApiResult.Success<>(response.body()));
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    result.setValue(new ApiResult.Success<>("Perfil actualizado correctamente"));
                 } else {
-                    String msg = "Error al actualizar usuario";
-                    try { if (response.errorBody() != null) msg = response.errorBody().string(); } catch (Exception ignored) {}
-                    result.setValue(new ApiResult.Error<>(msg));
+                    result.setValue(new ApiResult.Error<>("Error al actualizar"));
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                result.setValue(new ApiResult.Error<>(t.getMessage()));
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage()));
             }
         });
+        
         return result;
     }
 }

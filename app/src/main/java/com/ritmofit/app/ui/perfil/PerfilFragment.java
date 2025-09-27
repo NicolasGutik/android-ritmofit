@@ -1,13 +1,11 @@
 package com.ritmofit.app.ui.perfil;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,16 +19,12 @@ import com.ritmofit.app.data.dto.UserDTO;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-
 @AndroidEntryPoint
 public class PerfilFragment extends Fragment {
 
     private PerfilViewModel viewModel;
-    private EditText etEmail, etFirst, etLast, etTel, etFoto;
-    private ProgressBar progress;
-    private Button btnGuardar;
+    private EditText etEmail, etNombre, etApellido, etTelefono, etFoto;
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_perfil, container, false);
@@ -39,82 +33,55 @@ public class PerfilFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        
         viewModel = new ViewModelProvider(this).get(PerfilViewModel.class);
+        
         etEmail = view.findViewById(R.id.et_email);
-        etFirst = view.findViewById(R.id.et_firstname);
-        etLast = view.findViewById(R.id.et_lastname);
-        etTel = view.findViewById(R.id.et_telefono);
+        etNombre = view.findViewById(R.id.et_firstname);
+        etApellido = view.findViewById(R.id.et_lastname);
+        etTelefono = view.findViewById(R.id.et_telefono);
         etFoto = view.findViewById(R.id.et_foto);
-        progress = view.findViewById(R.id.progress);
-        btnGuardar = view.findViewById(R.id.btn_guardar);
-
-        observeUser();
-        btnGuardar.setOnClickListener(v -> submit());
+        
+        Button btnGuardar = view.findViewById(R.id.btn_guardar);
+        btnGuardar.setOnClickListener(v -> guardarCambios());
+        
+        // Observar datos del usuario
+        viewModel.getUser().observe(getViewLifecycleOwner(), this::mostrarUsuario);
+        
+        // Observar resultado de actualización
+        viewModel.getUpdateResult().observe(getViewLifecycleOwner(), this::mostrarResultado);
     }
 
-    private void observeUser() {
-        progress.setVisibility(View.VISIBLE);
-        viewModel.user.observe(getViewLifecycleOwner(), result -> {
-            if (result instanceof ApiResult.Loading) {
-                progress.setVisibility(View.VISIBLE);
-            } else if (result instanceof ApiResult.Success) {
-                progress.setVisibility(View.GONE);
-                UserDTO u = ((ApiResult.Success<UserDTO>) result).getData();
-                if (u != null) {
-                    if (u.getId() != null) {
-                        // keep id inside a hidden tag for update
-                        etEmail.setTag(u.getId());
-                    }
-                    etEmail.setText(nullSafe(u.getEmail()));
-                    etFirst.setText(nullSafe(u.getFirstName()));
-                    etLast.setText(nullSafe(u.getLastName()));
-                    etTel.setText(nullSafe(u.getTelefono()));
-                    etFoto.setText(nullSafe(u.getFoto()));
-                }
-            } else if (result instanceof ApiResult.Error) {
-                progress.setVisibility(View.GONE);
-                Toast.makeText(requireContext(), ((ApiResult.Error<?>) result).getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void submit() {
-        UserDTO body = new UserDTO();
-        Object idTag = etEmail.getTag();
-        if (idTag instanceof Long) {
-            body.setId((Long) idTag);
-        } else if (idTag instanceof Integer) {
-            body.setId(((Integer) idTag).longValue());
+    private void mostrarUsuario(ApiResult<UserDTO> result) {
+        if (result instanceof ApiResult.Success) {
+            UserDTO user = ((ApiResult.Success<UserDTO>) result).getData();
+            etEmail.setText(user.getEmail());
+            etNombre.setText(user.getFirstName());
+            etApellido.setText(user.getLastName());
+            etTelefono.setText(user.getTelefono());
+            etFoto.setText(user.getFoto());
         }
-        body.setEmail(etEmail.getText().toString().trim());
-        body.setFirstName(etFirst.getText().toString().trim());
-        body.setLastName(etLast.getText().toString().trim());
-        body.setTelefono(etTel.getText().toString().trim());
-        body.setFoto(etFoto.getText().toString().trim());
-
-        progress.setVisibility(View.VISIBLE);
-        viewModel.update(body).observe(getViewLifecycleOwner(), result -> {
-            if (result instanceof ApiResult.Loading) {
-                progress.setVisibility(View.VISIBLE);
-            } else if (result instanceof ApiResult.Success) {
-                progress.setVisibility(View.GONE);
-                String msg = ((ApiResult.Success<String>) result).getData();
-                Toast.makeText(requireContext(), TextUtils.isEmpty(msg) ? "Actualizado" : msg, Toast.LENGTH_LONG).show();
-                // Reload to reflect server state
-                viewModel.reload();
-            } else if (result instanceof ApiResult.Error) {
-                progress.setVisibility(View.GONE);
-                Toast.makeText(requireContext(), ((ApiResult.Error<String>) result).getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
-    public void onResume() {
-        super.onResume();
-        viewModel.reload();
+    private void mostrarResultado(ApiResult<String> result) {
+        if (result instanceof ApiResult.Success) {
+            Toast.makeText(getContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show();
+            // Recargar los datos después de actualizar exitosamente
+            viewModel.reload();
+        } else if (result instanceof ApiResult.Error) {
+            Toast.makeText(getContext(), "Error: " + ((ApiResult.Error<String>) result).getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private String nullSafe(String s) { return s == null ? "" : s; }
+    private void guardarCambios() {
+        UserDTO userData = new UserDTO();
+        userData.setEmail(etEmail.getText().toString());
+        userData.setFirstName(etNombre.getText().toString());
+        userData.setLastName(etApellido.getText().toString());
+        userData.setTelefono(etTelefono.getText().toString());
+        userData.setFoto(etFoto.getText().toString());
+        
+        viewModel.updateUser(userData);
+    }
 }
 

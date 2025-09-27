@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -189,20 +190,20 @@ public class AuthRepositoryImpl implements AuthRepository {
         MutableLiveData<ApiResult<String>> result = new MutableLiveData<>();
         result.setValue(new ApiResult.Loading<>());
         
-        apiService.actualizarUsuario(id, userDTO).enqueue(new Callback<String>() {
+        apiService.actualizarUsuario(id, userDTO).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     // Actualizar usuario guardado
                     guardarUsuario(userDTO);
-                    result.setValue(new ApiResult.Success<>(response.body()));
+                    result.setValue(new ApiResult.Success<>("Usuario actualizado correctamente"));
                 } else {
                     result.setValue(new ApiResult.Error<>("Error al actualizar usuario: " + response.code()));
                 }
             }
             
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e(TAG, "Error al actualizar usuario", t);
                 result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage(), t));
             }

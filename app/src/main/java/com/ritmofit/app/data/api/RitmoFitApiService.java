@@ -42,7 +42,7 @@ public interface RitmoFitApiService {
      */
     @PUT("user/update/{id}")
     @Headers("Content-Type: application/json")
-    Call<String> actualizarUsuario(@Path("id") Long id, @Body UserDTO userDTO);
+    Call<ResponseBody> actualizarUsuario(@Path("id") Long id, @Body UserDTO userDTO);
 
     /**
      * Trae los datos del usuario
@@ -168,6 +168,13 @@ public interface RitmoFitApiService {
      */
     @GET("clasificacion/{email}")
     Call<List<Object>> obtenerClasificacionesPorUsuario(@Path("email") String email);
+
+    @GET("user/profile")
+    Call<UserDTO> obtenerPerfil();
+
+    @PUT("user/profile")
+    @Headers("Content-Type: application/json")
+    Call<String> actualizarPerfil(@Body UserDTO userDTO);
 }
 
 
