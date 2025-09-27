@@ -63,6 +63,22 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
+
+                if (!handled && item.getItemId() == R.id.homeFragment) {
+                    handled = navController.popBackStack(R.id.homeFragment, false);
+                }
+
+                return handled;
+            });
+
+            bottomNavigationView.setOnItemReselectedListener(item -> {
+                if (!navController.popBackStack(item.getItemId(), false)) {
+                    NavigationUI.onNavDestinationSelected(item, navController);
+                }
+            });
         }
     }
 }

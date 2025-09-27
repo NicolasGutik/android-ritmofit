@@ -59,8 +59,10 @@ public class ClaseAdapter extends RecyclerView.Adapter<ClaseAdapter.ClaseViewHol
         
         private TextView tvDisciplina;
         private TextView tvSede;
+        private TextView tvLugar;
         private TextView tvFecha;
         private TextView tvProfesor;
+        private TextView tvDuracion;
         private TextView tvCupos;
         
         public ClaseViewHolder(@NonNull View itemView) {
@@ -68,8 +70,10 @@ public class ClaseAdapter extends RecyclerView.Adapter<ClaseAdapter.ClaseViewHol
             
             tvDisciplina = itemView.findViewById(R.id.tv_disciplina);
             tvSede = itemView.findViewById(R.id.tv_sede);
+            tvLugar = itemView.findViewById(R.id.tv_lugar);
             tvFecha = itemView.findViewById(R.id.tv_fecha);
             tvProfesor = itemView.findViewById(R.id.tv_profesor);
+            tvDuracion = itemView.findViewById(R.id.tv_duracion);
             tvCupos = itemView.findViewById(R.id.tv_cupos);
             
             itemView.setOnClickListener(v -> {
@@ -83,20 +87,44 @@ public class ClaseAdapter extends RecyclerView.Adapter<ClaseAdapter.ClaseViewHol
         public void bind(ClaseDTO clase) {
             tvDisciplina.setText(clase.getDisciplina());
             tvSede.setText(clase.getSede());
-            tvProfesor.setText(clase.getNombreProfesor());
-            tvCupos.setText(String.format(Locale.getDefault(), 
-                    "Cupos: %d/%d", clase.getCuposDisponibles(), clase.getCupos()));
-            
-            // Formatear fecha
+
+            String lugar = clase.getLugar();
+            tvLugar.setText(lugar != null && !lugar.isEmpty()
+                    ? lugar
+                    : itemView.getContext().getString(R.string.item_clase_lugar_pending));
+
+            String profesor = clase.getNombreProfesor();
+            String duracion = clase.getDuracion();
+            Integer cuposTotales = clase.getCupos();
+            Integer cuposDisponibles = clase.getCuposDisponibles();
+
+            tvProfesor.setText(profesor != null && !profesor.isEmpty()
+                    ? itemView.getContext().getString(R.string.item_clase_profesor, profesor)
+                    : itemView.getContext().getString(R.string.item_clase_profesor_pending));
+
+            tvDuracion.setText(duracion != null && !duracion.isEmpty()
+                    ? itemView.getContext().getString(R.string.item_clase_duracion, duracion)
+                    : itemView.getContext().getString(R.string.item_clase_duracion_pending));
+
+            if (cuposTotales == null || cuposTotales == 0) {
+                cuposTotales = 0;
+            }
+            if (cuposDisponibles == null) {
+                cuposDisponibles = 0;
+            }
+
+            tvCupos.setText(String.format(Locale.getDefault(), "CUPOS %d/%d",
+                    cuposDisponibles, cuposTotales));
+
             String fechaFormateada = formatearFecha(clase.getFecha());
             tvFecha.setText(fechaFormateada);
         }
-        
+
         private String formatearFecha(String fecha) {
             try {
                 SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-                SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-                
+                SimpleDateFormat outputFormat = new SimpleDateFormat("EEE dd MMM • HH:mm", Locale.getDefault());
+
                 Date date = inputFormat.parse(fecha);
                 if (date != null) {
                     return outputFormat.format(date);
@@ -108,4 +136,3 @@ public class ClaseAdapter extends RecyclerView.Adapter<ClaseAdapter.ClaseViewHol
         }
     }
 }
-

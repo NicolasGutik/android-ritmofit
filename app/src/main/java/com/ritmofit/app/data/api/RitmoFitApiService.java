@@ -115,6 +115,36 @@ public interface RitmoFitApiService {
     @GET("turnos/clase/{claseId}/confirmados/count")
     Call<Integer> contarTurnosConfirmados(@Path("claseId") Long claseId);
     
+    /**
+     * Obtiene historial de asistencias del usuario
+     * GET /turnos/asistencias/{userId}
+     */
+    @GET("turnos/asistencias/{userId}")
+    Call<List<AsistenciaDTO>> obtenerAsistencias(@Path("userId") Long userId);
+    
+    /**
+     * Obtiene historial de asistencias del usuario con filtro de fechas
+     * GET /turnos/asistencias/{userId}?fechaDesde={fechaDesde}&fechaHasta={fechaHasta}
+     */
+    @GET("turnos/asistencias/{userId}")
+    Call<List<AsistenciaDTO>> obtenerAsistenciasConFiltro(
+        @Path("userId") Long userId,
+        @Query("fechaDesde") String fechaDesde,
+        @Query("fechaHasta") String fechaHasta
+    );
+    
+    /**
+     * Obtiene historial de asistencias del usuario con filtro de fechas y disciplina
+     * GET /turnos/asistencias/{userId}?fechaDesde={fechaDesde}&fechaHasta={fechaHasta}&disciplina={disciplina}
+     */
+    @GET("turnos/asistencias/{userId}")
+    Call<List<AsistenciaDTO>> obtenerAsistenciasConFiltroCompleto(
+        @Path("userId") Long userId,
+        @Query("fechaDesde") String fechaDesde,
+        @Query("fechaHasta") String fechaHasta,
+        @Query("disciplina") String disciplina
+    );
+    
     // ========== CLASIFICACIONES ==========
     
     /**

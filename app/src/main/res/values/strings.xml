@@ -19,6 +19,36 @@
     <string name="detalle_clase_title">Detalle de Clase</string>
     <string name="reservar_button">Reservar</string>
     <string name="cancelar_reserva_button">Cancelar Reserva</string>
+    <string name="item_clase_profesor">Con %1$s</string>
+    <string name="item_clase_profesor_pending">Profesor a confirmar</string>
+    <string name="item_clase_duracion">Duración • %1$s</string>
+    <string name="item_clase_duracion_pending">Duración • A confirmar</string>
+    <string name="item_clase_lugar_pending">Por definir</string>
+    <string name="detalle_label_instructor">Instructor</string>
+    <string name="detalle_label_cupos">Disponibilidad</string>
+    <string name="detalle_estado_cupos_alto">Lugares disponibles sin restricciones</string>
+    <string name="detalle_estado_cupos_medio">Quedan pocos lugares, apurate</string>
+    <string name="detalle_estado_cupos_bajo">Últimos lugares disponibles</string>
+    <string name="detalle_button_ver_mapa">Ver en Maps</string>
+    <string name="detalle_cupos_resumen">%1$d lugares libres de %2$d</string>
+    <string name="detalle_button_sin_cupos">Sin cupos</string>
+    <string name="detalle_ubicacion_error">No se pudo generar la ubicación de esta clase</string>
+    
+    <!-- Filtros Home -->
+    <string name="home_button_filtro">Filtrar</string>
+    <string name="home_button_filtro_applied">Editar filtros</string>
+    <string name="home_filters_summary_default">Sin filtros aplicados</string>
+    <string name="home_filter_dialog_title">Filtrar clases</string>
+    <string name="home_filter_disciplina_hint">Disciplina</string>
+    <string name="home_filter_sede_hint">Sede</string>
+    <string name="home_filter_fecha_label">Fecha específica</string>
+    <string name="home_filter_fecha_button">Elegir fecha</string>
+    <string name="home_filter_fecha_clear">Limpiar fecha</string>
+    <string name="home_filter_fecha_none">Sin fecha seleccionada</string>
+    <string name="home_filter_apply">Aplicar</string>
+    <string name="home_filter_reset">Limpiar filtros</string>
+    <string name="home_filter_option_all">Todas</string>
+    <string name="home_filter_fecha_picker_title">Seleccionar fecha</string>
     
     <!-- Errores -->
     <string name="error_network">Error de conexión</string>
