@@ -1,6 +1,7 @@
 package com.ritmofit.app.auth.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences; // ⬅️ IMPORTANTE
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,7 +18,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.ritmofit.app.MainActivity;
 import com.ritmofit.app.R;
 import com.ritmofit.app.data.dto.ApiResult;
-import com.ritmofit.app.data.dto.UserDTO;
 import com.ritmofit.app.data.repository.AuthRepository;
 
 import java.util.Map;
@@ -28,30 +28,32 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
-    
+
     private static final String TAG = "LoginActivity";
-    
-    @Inject
-    AuthRepository authRepository;
-    
+
+    @Inject AuthRepository authRepository;
+
+    // ⬇️ INYECTAMOS LAS PREFS CIFRADAS QUE PROVEE TU StorageModule
+    @Inject SharedPreferences encryptedPrefs;
+
     private TextInputLayout tilEmail, tilOtp;
     private TextInputEditText etEmail, etOtp;
     private MaterialButton btnSendOtp, btnLogin, btnRegister;
     private ProgressBar progressBar;
     private TextView tvError;
-    
+
     private boolean otpSent = false;
     private String currentEmail;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        
+
         initViews();
         setupClickListeners();
     }
-    
+
     private void initViews() {
         tilEmail = findViewById(R.id.til_email);
         tilOtp = findViewById(R.id.til_otp);
@@ -63,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         tvError = findViewById(R.id.tv_error);
     }
-    
+
     private void setupClickListeners() {
         btnSendOtp.setOnClickListener(v -> {
             if (!otpSent) {
@@ -72,40 +74,39 @@ public class LoginActivity extends AppCompatActivity {
                 resetForm();
             }
         });
-        
+
         btnLogin.setOnClickListener(v -> validateOtp());
         btnRegister.setOnClickListener(v -> goToRegister());
     }
-    
+
     private void sendOtp() {
         String email = etEmail.getText().toString().trim();
-        
+
         if (TextUtils.isEmpty(email)) {
             tilEmail.setError("Ingresa tu email");
             return;
         }
-        
+
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             tilEmail.setError("Email inválido");
             return;
         }
-        
+
         tilEmail.setError(null);
         currentEmail = email;
-        
+
         showLoading(true);
         hideError();
-        
+
         authRepository.enviarOTP(email).observe(this, new Observer<ApiResult<Map<String, Object>>>() {
             @Override
             public void onChanged(ApiResult<Map<String, Object>> result) {
                 showLoading(false);
-                
+
                 if (result instanceof ApiResult.Success) {
                     Map<String, Object> responseData = ((ApiResult.Success<Map<String, Object>>) result).getData();
                     String message = (String) responseData.get("message");
-                    
-                    // Usuario existe: mostrar campos OTP
+
                     otpSent = true;
                     showOtpFields();
                     btnSendOtp.setText("Cambiar email");
@@ -116,32 +117,50 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    
+
     private void validateOtp() {
         String otp = etOtp.getText().toString().trim();
-        
+
         if (TextUtils.isEmpty(otp)) {
             tilOtp.setError("Ingresa el código OTP");
             return;
         }
-        
+
         if (otp.length() != 6) {
             tilOtp.setError("El código debe tener 6 dígitos");
             return;
         }
-        
+
         tilOtp.setError(null);
-        
+
         showLoading(true);
         hideError();
-        
+
         authRepository.validarOTP(currentEmail, otp).observe(this, new Observer<ApiResult<Map<String, Object>>>() {
             @Override
             public void onChanged(ApiResult<Map<String, Object>> result) {
                 showLoading(false);
-                
+
                 if (result instanceof ApiResult.Success) {
-                    // Login exitoso, navegar a MainActivity
+                    Map<String, Object> data = ((ApiResult.Success<Map<String, Object>>) result).getData();
+
+                    // ⬇️⬇️⬇️ GUARDAR TOKEN Y USER_ID ANTES DE NAVEGAR
+                    // TOKEN (si viene en la respuesta como "token")
+                    Object tokenObj = data.get("token");
+                    if (tokenObj instanceof String) {
+                        String token = (String) tokenObj;
+                        if (!TextUtils.isEmpty(token)) {
+                            encryptedPrefs.edit().putString("jwt_token", token).apply();
+                        }
+                    }
+
+                    // USER_ID (dentro de "user": {...})
+                    Long userId = extractUserId(data); // lee "id" / "_id" / "userId"
+                    if (userId != null && userId > 0) {
+                        encryptedPrefs.edit().putLong("user_id", userId).apply();
+                    }
+                    // ⬆️⬆️⬆️
+
                     Toast.makeText(LoginActivity.this, "¡Bienvenido a RitmoFit!", Toast.LENGTH_SHORT).show();
                     navigateToMain();
                 } else if (result instanceof ApiResult.Error) {
@@ -150,17 +169,35 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    
+
+    // --- helper para extraer el id del usuario de la respuesta ---
+    private Long extractUserId(Map<String, Object> data) {
+        Object userObj = data.get("user");
+        if (userObj instanceof Map) {
+            Map<?, ?> userMap = (Map<?, ?>) userObj;
+
+            Object idObj = userMap.get("id");
+            if (idObj == null) idObj = userMap.get("_id");
+            if (idObj == null) idObj = userMap.get("userId");
+
+            if (idObj instanceof Number) return ((Number) idObj).longValue();
+            if (idObj instanceof String) {
+                try { return Long.parseLong((String) idObj); } catch (Exception ignored) {}
+            }
+        }
+        return null;
+    }
+
     private void showOtpFields() {
         tilOtp.setVisibility(View.VISIBLE);
         btnLogin.setVisibility(View.VISIBLE);
     }
-    
+
     private void goToRegister() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
-    
+
     private void resetForm() {
         otpSent = false;
         currentEmail = null;
@@ -171,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
         etOtp.setText("");
         hideError();
     }
-    
+
     private void showLoading(boolean show) {
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         btnSendOtp.setEnabled(!show);
@@ -179,16 +216,16 @@ public class LoginActivity extends AppCompatActivity {
         etEmail.setEnabled(!show);
         etOtp.setEnabled(!show);
     }
-    
+
     private void showError(String message) {
         tvError.setText(message);
         tvError.setVisibility(View.VISIBLE);
     }
-    
+
     private void hideError() {
         tvError.setVisibility(View.GONE);
     }
-    
+
     private void navigateToMain() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

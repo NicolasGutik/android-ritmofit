@@ -26,6 +26,8 @@ public class AuthRepositoryImpl implements AuthRepository {
     
     private static final String TAG = "AuthRepository";
     private static final String KEY_JWT_TOKEN = "jwt_token";
+
+    private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USER_DATA = "user_data";
     
     private final RitmoFitApiService apiService;
@@ -181,6 +183,7 @@ public class AuthRepositoryImpl implements AuthRepository {
     public void cerrarSesion() {
         encryptedPrefs.edit()
                 .remove(KEY_JWT_TOKEN)
+                .remove(KEY_USER_ID)
                 .remove(KEY_USER_DATA)
                 .apply();
     }
@@ -203,10 +206,19 @@ public class AuthRepositoryImpl implements AuthRepository {
     
     @Override
     public void guardarUsuario(UserDTO usuario) {
+        if (usuario == null) return;
+
         String userJson = gson.toJson(usuario);
-        encryptedPrefs.edit()
-                .putString(KEY_USER_DATA, userJson)
-                .apply();
+        SharedPreferences.Editor edit = encryptedPrefs.edit();
+        edit.putString(KEY_USER_DATA, userJson);
+
+        if (usuario.getId() != null) {
+            edit.putLong(KEY_USER_ID, usuario.getId());
+            Log.d(TAG, "✅ user_id guardado: " + usuario.getId());
+        } else {
+            Log.w(TAG, "⚠️ usuario.getId() es null, no se guardó user_id");
+        }
+        edit.apply();
     }
     
     @Override
