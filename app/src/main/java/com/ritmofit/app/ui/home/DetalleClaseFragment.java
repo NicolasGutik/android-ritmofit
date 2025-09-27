@@ -25,6 +25,7 @@ public class DetalleClaseFragment extends Fragment {
     private DetalleClaseViewModel viewModel;
     private FragmentDetalleClaseBinding binding;
     private long claseId;
+    private ClaseDTO claseActual;
     
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,40 +81,53 @@ public class DetalleClaseFragment extends Fragment {
             Toast.makeText(getContext(), "Funcionalidad de reserva en desarrollo", Toast.LENGTH_SHORT).show();
         });
         
-        binding.btnVerUbicacion.setOnClickListener(v -> {
-            // Intent implícito para abrir Google Maps
-            String ubicacion = "Sede Norte, Buenos Aires"; // TODO: Obtener ubicación real
-            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(ubicacion));
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
-            
-            if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                startActivity(mapIntent);
-            } else {
-                // Fallback a navegador web
-                Intent webIntent = new Intent(Intent.ACTION_VIEW, 
-                    Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Uri.encode(ubicacion)));
-                startActivity(webIntent);
-            }
-        });
+        binding.btnVerUbicacion.setOnClickListener(v -> openLocationInMaps());
     }
     
     private void mostrarClase(ClaseDTO clase) {
-        binding.tvDisciplina.setText(clase.getDisciplina());
-        binding.tvSede.setText(clase.getSede());
-        binding.tvLugar.setText(clase.getLugar());
+        claseActual = clase;
+
+        String disciplina = clase.getDisciplina();
+        String sede = clase.getSede();
+        String lugar = clase.getLugar();
+        String duracion = clase.getDuracion();
+        String profesor = clase.getNombreProfesor();
+
+        binding.tvDisciplina.setText(disciplina != null ? disciplina : getString(R.string.clases_title));
+        binding.tvSede.setText(sede != null && !sede.isEmpty() ? sede : getString(R.string.item_clase_lugar_pending));
+        binding.tvLugar.setText(lugar != null && !lugar.isEmpty() ? lugar : getString(R.string.item_clase_lugar_pending));
         binding.tvFecha.setText(formatearFecha(clase.getFecha()));
-        binding.tvDuracion.setText(clase.getDuracion());
-        binding.tvProfesor.setText(clase.getNombreProfesor());
-        binding.tvCupos.setText(String.format("Cupos disponibles: %d de %d", 
-                clase.getCuposDisponibles(), clase.getCupos()));
-        
-        // Habilitar/deshabilitar botón de reserva según disponibilidad
-        binding.btnReservar.setEnabled(clase.getCuposDisponibles() > 0);
-        
-        if (clase.getCuposDisponibles() <= 0) {
-            binding.btnReservar.setText("Sin cupos disponibles");
+
+        binding.tvDuracion.setText(duracion != null && !duracion.isEmpty()
+                ? getString(R.string.item_clase_duracion, duracion)
+                : getString(R.string.item_clase_duracion_pending));
+
+        binding.tvProfesor.setText(profesor != null && !profesor.isEmpty()
+                ? getString(R.string.item_clase_profesor, profesor)
+                : getString(R.string.item_clase_profesor_pending));
+
+        int cuposTotales = clase.getCupos() != null ? clase.getCupos() : 0;
+        int cuposDisponibles = clase.getCuposDisponibles() != null ? clase.getCuposDisponibles() : 0;
+        if (cuposTotales < 0) cuposTotales = 0;
+        if (cuposDisponibles < 0) cuposDisponibles = 0;
+        if (cuposDisponibles > cuposTotales && cuposTotales > 0) {
+            cuposDisponibles = cuposTotales;
         }
+
+        binding.tvCupos.setText(getString(R.string.detalle_cupos_resumen, cuposDisponibles, cuposTotales));
+
+        int max = Math.max(cuposTotales, 1);
+        binding.progressCupos.setMax(max);
+        int ocupados = Math.max(cuposTotales - cuposDisponibles, 0);
+        binding.progressCupos.setProgressCompat(Math.min(ocupados, max), true);
+
+        binding.tvEstadoCupos.setText(obtenerMensajeDisponibilidad(cuposTotales, cuposDisponibles));
+
+        boolean hayCupos = cuposDisponibles > 0;
+        binding.btnReservar.setEnabled(hayCupos);
+        binding.btnReservar.setText(hayCupos
+                ? getString(R.string.reservar_button)
+                : getString(R.string.detalle_button_sin_cupos));
     }
     
     private void showLoading(boolean show) {
@@ -124,8 +138,7 @@ public class DetalleClaseFragment extends Fragment {
     private String formatearFecha(String fecha) {
         try {
             java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault());
-            java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("dd/MM/yyyy 'a las' HH:mm", java.util.Locale.getDefault());
-            
+            java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("EEE dd MMM '•' HH:mm", java.util.Locale.getDefault());
             java.util.Date date = inputFormat.parse(fecha);
             if (date != null) {
                 return outputFormat.format(date);
@@ -135,5 +148,84 @@ public class DetalleClaseFragment extends Fragment {
         }
         return fecha;
     }
-}
 
+    private void openLocationInMaps() {
+        String query = buildLocationQuery();
+        if (query == null || query.isEmpty()) {
+            Toast.makeText(getContext(), R.string.detalle_ubicacion_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(query));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+
+        if (getActivity() != null && mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(mapIntent);
+        } else {
+            Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Uri.encode(query)));
+            startActivity(webIntent);
+        }
+    }
+
+    private String buildLocationQuery() {
+        if (claseActual == null) {
+            return null;
+        }
+
+        String disciplina = sanitize(claseActual.getDisciplina());
+        String lugar = sanitize(claseActual.getLugar());
+        String sede = sanitize(claseActual.getSede());
+
+        StringBuilder builder = new StringBuilder();
+
+        if (disciplina != null) {
+            builder.append(disciplina);
+        }
+
+        if (lugar != null) {
+            if (builder.length() > 0) {
+                builder.append(" - ");
+            }
+            builder.append(lugar);
+        }
+
+        if (sede != null) {
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            builder.append(sede);
+        }
+
+        if (builder.length() > 0) {
+            builder.append(", RitmoFit");
+            return builder.toString();
+        }
+
+        return null;
+    }
+
+    private String sanitize(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private String obtenerMensajeDisponibilidad(int cuposTotales, int cuposDisponibles) {
+        if (cuposTotales <= 0) {
+            return getString(R.string.detalle_estado_cupos_alto);
+        }
+
+        float ratio = cuposDisponibles / (float) cuposTotales;
+        if (ratio <= 0.15f) {
+            return getString(R.string.detalle_estado_cupos_bajo);
+        } else if (ratio <= 0.45f) {
+            return getString(R.string.detalle_estado_cupos_medio);
+        } else {
+            return getString(R.string.detalle_estado_cupos_alto);
+        }
+    }
+}

@@ -5,71 +5,116 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
+    android:layout_marginBottom="12dp"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/gray_light"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
-        <!-- Disciplina -->
-        <TextView
-            android:id="@+id/tv_disciplina"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/ritmo_fit_primary"
-            tools:text="Yoga" />
+            android:gravity="center_vertical">
 
-        <!-- Sede -->
-        <TextView
-            android:id="@+id/tv_sede"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="14sp"
-            android:textColor="@color/gray_dark"
-            tools:text="Sede Norte" />
+            <TextView
+                android:id="@+id/tv_disciplina"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAllCaps="true"
+                android:textColor="@color/ritmo_fit_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Yoga Funcional" />
 
-        <!-- Fecha -->
+            <TextView
+                android:id="@+id/tv_cupos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_neutral"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textColor="@color/ritmo_fit_secondary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="CUPOS 15/20" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tv_fecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/gray_dark"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Mié 15 Ene • 10:00" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="14sp"
-            android:textColor="@color/gray_dark"
-            tools:text="15/01/2025 10:00" />
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <!-- Profesor -->
+            <TextView
+                android:id="@+id/tv_sede"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_primary"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textColor="@color/ritmo_fit_primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="Sede Norte" />
+
+            <TextView
+                android:id="@+id/tv_lugar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_chip_neutral"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textColor="@color/gray_dark"
+                android:textSize="12sp"
+                tools:text="Sala A" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tv_profesor"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="14sp"
+            android:layout_marginTop="12dp"
             android:textColor="@color/gray_dark"
-            tools:text="Prof. María González" />
+            android:textSize="14sp"
+            tools:text="Con María González" />
 
-        <!-- Cupos -->
         <TextView
-            android:id="@+id/tv_cupos"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_duracion"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/gray_medium"
             android:textSize="12sp"
-            android:textColor="@color/ritmo_fit_secondary"
-            android:textStyle="bold"
-            tools:text="Cupos: 15/20" />
+            tools:text="Duración • 60 minutos" />
 
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
-

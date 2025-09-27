@@ -30,193 +30,204 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingBottom="24dp"
             android:visibility="gone">
 
-            <!-- Card con información principal -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/gray_light"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="24dp">
 
                     <TextView
                         android:id="@+id/tv_disciplina"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textAllCaps="true"
+                        android:textColor="@color/ritmo_fit_primary"
                         android:textSize="24sp"
                         android:textStyle="bold"
-                        android:textColor="@color/ritmo_fit_primary"
-                        tools:text="Yoga" />
-
-                    <TextView
-                        android:id="@+id/tv_sede"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textSize="18sp"
-                        android:textColor="@color/gray_dark"
-                        tools:text="Sede Norte" />
+                        tools:text="Yoga Funcional" />
 
                     <TextView
                         android:id="@+id/tv_fecha"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/gray_dark"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="Mié 15 Ene • 10:00" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textSize="16sp"
-                        android:textColor="@color/gray_dark"
-                        tools:text="15 de Enero de 2025 a las 10:00" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_sede"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_chip_primary"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp"
+                            android:textColor="@color/ritmo_fit_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            tools:text="Sede Norte" />
+
+                        <TextView
+                            android:id="@+id/tv_lugar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:background="@drawable/bg_chip_neutral"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp"
+                            android:textColor="@color/gray_dark"
+                            android:textSize="12sp"
+                            tools:text="Sala A" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_duracion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/gray_medium"
+                        android:textSize="14sp"
+                        tools:text="Duración • 60 minutos" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card con detalles -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/gray_light"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="24dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Detalles de la Clase"
-                        android:textSize="18sp"
+                        android:text="@string/detalle_label_instructor"
+                        android:textAllCaps="true"
+                        android:textColor="@color/gray_medium"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_profesor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/gray_dark"
+                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/ritmo_fit_primary"
-                        android:layout_marginBottom="12dp" />
+                        tools:text="María González" />
 
-                    <LinearLayout
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@color/gray_light" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/detalle_label_cupos"
+                        android:textAllCaps="true"
+                        android:textColor="@color/gray_medium"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progress_cupos"
+                        style="@style/Widget.Material3.LinearProgressIndicator"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginTop="12dp"
+                        android:progress="0"
+                        app:trackColor="@color/gray_light"
+                        app:trackThickness="8dp" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Lugar:"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_lugar"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            tools:text="Sala A" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_cupos"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/ritmo_fit_secondary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="Quedan 5 lugares" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Duración:"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_duracion"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            tools:text="60 minutos" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_estado_cupos"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Profesor:"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_profesor"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            tools:text="María González" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Cupos:"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_cupos"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:textColor="@color/ritmo_fit_secondary"
-                            tools:text="Cupos disponibles: 15 de 20" />
-
-                    </LinearLayout>
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/gray_medium"
+                        android:textSize="14sp"
+                        tools:text="Alta disponibilidad" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Botones de acción -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_reservar"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
                     android:text="@string/reservar_button"
                     android:textSize="16sp"
                     style="@style/Widget.Material3.Button" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_ver_ubicacion"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Ver Ubicación en Maps"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/detalle_button_ver_mapa"
                     android:textSize="16sp"
                     style="@style/Widget.Material3.Button.OutlinedButton" />
 
             </LinearLayout>
-
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -224,4 +235,3 @@
     </ScrollView>
 
 </layout>
-
