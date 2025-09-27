@@ -98,6 +98,11 @@ public class ClaseAdapter extends RecyclerView.Adapter<ClaseAdapter.ClaseViewHol
             Integer cuposTotales = clase.getCupos();
             Integer cuposDisponibles = clase.getCuposDisponibles();
 
+            // Debug logs para verificar los valores
+            System.out.println("🔍 ClaseAdapter - Clase: " + clase.getDisciplina());
+            System.out.println("🔍 ClaseAdapter - cuposTotales: " + cuposTotales);
+            System.out.println("🔍 ClaseAdapter - cuposDisponibles: " + cuposDisponibles);
+
             tvProfesor.setText(profesor != null && !profesor.isEmpty()
                     ? itemView.getContext().getString(R.string.item_clase_profesor, profesor)
                     : itemView.getContext().getString(R.string.item_clase_profesor_pending));
@@ -113,7 +118,8 @@ public class ClaseAdapter extends RecyclerView.Adapter<ClaseAdapter.ClaseViewHol
                 cuposDisponibles = 0;
             }
 
-            tvCupos.setText(String.format(Locale.getDefault(), "CUPOS %d/%d",
+            System.out.println("🔍 ClaseAdapter - Valores finales - cuposDisponibles: " + cuposDisponibles + ", cuposTotales: " + cuposTotales);
+            tvCupos.setText(String.format(Locale.getDefault(), "%d/%d",
                     cuposDisponibles, cuposTotales));
 
             String fechaFormateada = formatearFecha(clase.getFecha());
