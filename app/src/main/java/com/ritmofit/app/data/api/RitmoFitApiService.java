@@ -1,7 +1,6 @@
 package com.ritmofit.app.data.api;
 
 import com.ritmofit.app.data.dto.*;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 

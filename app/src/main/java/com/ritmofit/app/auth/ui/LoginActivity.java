@@ -117,22 +117,20 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    
+
     private void validateOtp() {
         String otp = etOtp.getText().toString().trim();
-        
+
         if (TextUtils.isEmpty(otp)) {
             tilOtp.setError("Ingresa el código OTP");
             return;
         }
-        
         if (otp.length() != 6) {
             tilOtp.setError("El código debe tener 6 dígitos");
             return;
         }
-        
+
         tilOtp.setError(null);
-        
         showLoading(true);
         hideError();
 
@@ -144,34 +142,43 @@ public class LoginActivity extends AppCompatActivity {
                 if (result instanceof ApiResult.Success) {
                     Map<String, Object> responseData = ((ApiResult.Success<Map<String, Object>>) result).getData();
 
-                    // 1) Extraer token de la respuesta (ajustá las keys a tu backend)
+                    // --- 1) TOKEN ---
                     String token = null;
                     if (responseData != null) {
                         Object t1 = responseData.get("token");
                         Object t2 = responseData.get("jwt");
                         Object t3 = responseData.get("accessToken");
-                        token = (t1 != null ? String.valueOf(t1) : (t2 != null ? String.valueOf(t2) : (t3 != null ? String.valueOf(t3) : null)));
+                        token = (t1 != null ? String.valueOf(t1)
+                                : (t2 != null ? String.valueOf(t2)
+                                : (t3 != null ? String.valueOf(t3) : null)));
                     }
 
                     if (!TextUtils.isEmpty(token)) {
-                        // 2) Guardar token (según tu implementación actual del repo)
+                        // Guardar SIEMPRE sin "Bearer "
+                        if (token.startsWith("Bearer ")) {
+                            token = token.substring("Bearer ".length());
+                        }
                         authRepository.guardarToken(token);
+                        Log.d(TAG, "Token guardado (len=" + token.length() + ")");
+                    } else {
+                        Log.w(TAG, "No vino token en la respuesta de validarOTP");
                     }
 
-                    // 3) (Opcional) Guardar el usuario si el backend lo devuelve en el login
-                    //    Si tu respuesta trae un objeto "user" con los datos:
-            /*
-            Object userObj = responseData.get("user");
-            if (userObj instanceof Map) {
-                // Convertir ese Map a UserDTO con Gson, o tener un método en el repo:
-                UserDTO user = mapToUserDto((Map<String, Object>) userObj); // implementá esta helper o usá Gson
-                authRepository.guardarUsuario(user);
-            }
-            */
+                    // --- 2) (Opcional) USUARIO ---
+                    if (responseData != null && responseData.containsKey("user")) {
+                        Object userObj = responseData.get("user");
+                        if (userObj instanceof Map) {
+                            UserDTO user = mapToUserDto((Map<String, Object>) userObj);
+                            if (user != null) {
+                                authRepository.guardarUsuario(user);
+                                Log.d(TAG, "Usuario guardado: id=" + user.getId());
+                            }
+                        } else {
+                            Log.w(TAG, "Campo 'user' no es un Map. Tipo=" + (userObj != null ? userObj.getClass() : "null"));
+                        }
+                    }
 
                     Toast.makeText(LoginActivity.this, "¡Bienvenido a RitmoFit!", Toast.LENGTH_SHORT).show();
-
-                    // 4) Navegar recién después de guardar credenciales
                     navigateToMain();
 
                 } else if (result instanceof ApiResult.Error) {
@@ -224,6 +231,17 @@ public class LoginActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private UserDTO mapToUserDto(Map<String, Object> map) {
+        try {
+            com.google.gson.Gson gson = new com.google.gson.Gson();
+            String json = gson.toJson(map);                   // Map -> JSON
+            return gson.fromJson(json, UserDTO.class);        // JSON -> UserDTO
+        } catch (Exception e) {
+            Log.e(TAG, "Error mapeando 'user' a UserDTO", e);
+            return null;
+        }
     }
 }
 

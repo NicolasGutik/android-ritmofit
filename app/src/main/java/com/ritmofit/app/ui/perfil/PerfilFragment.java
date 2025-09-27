@@ -21,7 +21,6 @@ import com.ritmofit.app.data.dto.UserDTO;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-
 @AndroidEntryPoint
 public class PerfilFragment extends Fragment {
 
@@ -29,6 +28,8 @@ public class PerfilFragment extends Fragment {
     private EditText etEmail, etFirst, etLast, etTel, etFoto;
     private ProgressBar progress;
     private Button btnGuardar;
+
+    private Long currentUserId = null; // ← guardamos el ID aquí
 
     @Nullable
     @Override
@@ -43,9 +44,9 @@ public class PerfilFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(PerfilViewModel.class);
         etEmail = view.findViewById(R.id.et_email);
         etFirst = view.findViewById(R.id.et_firstname);
-        etLast = view.findViewById(R.id.et_lastname);
-        etTel = view.findViewById(R.id.et_telefono);
-        etFoto = view.findViewById(R.id.et_foto);
+        etLast  = view.findViewById(R.id.et_lastname);
+        etTel   = view.findViewById(R.id.et_telefono);
+        etFoto  = view.findViewById(R.id.et_foto);
         progress = view.findViewById(R.id.progress);
         btnGuardar = view.findViewById(R.id.btn_guardar);
 
@@ -54,7 +55,7 @@ public class PerfilFragment extends Fragment {
     }
 
     private void observeUser() {
-        progress.setVisibility(View.VISIBLE);
+        // si tu repo emite Loading, esto lo refleja
         viewModel.user.observe(getViewLifecycleOwner(), result -> {
             if (result instanceof ApiResult.Loading) {
                 progress.setVisibility(View.VISIBLE);
@@ -62,30 +63,33 @@ public class PerfilFragment extends Fragment {
                 progress.setVisibility(View.GONE);
                 UserDTO u = ((ApiResult.Success<UserDTO>) result).getData();
                 if (u != null) {
-                    if (u.getId() != null) {
-                        // keep id inside a hidden tag for update
-                        etEmail.setTag(u.getId());
-                    }
+                    currentUserId = u.getId();                // ← guardamos id
                     etEmail.setText(nullSafe(u.getEmail()));
                     etFirst.setText(nullSafe(u.getFirstName()));
                     etLast.setText(nullSafe(u.getLastName()));
                     etTel.setText(nullSafe(u.getTelefono()));
                     etFoto.setText(nullSafe(u.getFoto()));
+                } else {
+                    // Si vino null, limpiamos por las dudas
+                    currentUserId = null;
+                    etEmail.setText("");
+                    etFirst.setText("");
+                    etLast.setText("");
+                    etTel.setText("");
+                    etFoto.setText("");
                 }
             } else if (result instanceof ApiResult.Error) {
                 progress.setVisibility(View.GONE);
-                Toast.makeText(requireContext(), ((ApiResult.Error<?>) result).getMessage(), Toast.LENGTH_LONG).show();
+                String msg = ((ApiResult.Error<?>) result).getMessage();
+                Toast.makeText(requireContext(), TextUtils.isEmpty(msg) ? getString(R.string.error_network) : msg, Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void submit() {
         UserDTO body = new UserDTO();
-        Object idTag = etEmail.getTag();
-        if (idTag instanceof Long) {
-            body.setId((Long) idTag);
-        } else if (idTag instanceof Integer) {
-            body.setId(((Integer) idTag).longValue());
+        if (currentUserId != null) {
+            body.setId(currentUserId);
         }
         body.setEmail(etEmail.getText().toString().trim());
         body.setFirstName(etFirst.getText().toString().trim());
@@ -101,15 +105,16 @@ public class PerfilFragment extends Fragment {
                 progress.setVisibility(View.GONE);
                 String msg = ((ApiResult.Success<String>) result).getData();
                 Toast.makeText(requireContext(), TextUtils.isEmpty(msg) ? "Actualizado" : msg, Toast.LENGTH_LONG).show();
-                // Reload to reflect server state
-                viewModel.reload();
+                viewModel.reload(); // refresca desde el backend
             } else if (result instanceof ApiResult.Error) {
                 progress.setVisibility(View.GONE);
-                Toast.makeText(requireContext(), ((ApiResult.Error<String>) result).getMessage(), Toast.LENGTH_LONG).show();
+                String msg = ((ApiResult.Error<String>) result).getMessage();
+                Toast.makeText(requireContext(), TextUtils.isEmpty(msg) ? getString(R.string.error_network) : msg, Toast.LENGTH_LONG).show();
             }
         });
     }
 
+    @Override
     public void onResume() {
         super.onResume();
         viewModel.reload();
@@ -117,4 +122,5 @@ public class PerfilFragment extends Fragment {
 
     private String nullSafe(String s) { return s == null ? "" : s; }
 }
+
 
