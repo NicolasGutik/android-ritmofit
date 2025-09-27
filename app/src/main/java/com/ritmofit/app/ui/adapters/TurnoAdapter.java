@@ -66,7 +66,7 @@ public class TurnoAdapter extends RecyclerView.Adapter<TurnoAdapter.TurnoViewHol
         private TextView tvFecha;
         private TextView tvEstado;
         private ImageButton btnCancelar;
-        private ImageButton btnConfirmar;
+        // private ImageButton btnConfirmar; // TEMPORALMENTE OCULTO
         
         public TurnoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,7 +77,7 @@ public class TurnoAdapter extends RecyclerView.Adapter<TurnoAdapter.TurnoViewHol
             tvFecha = itemView.findViewById(R.id.tv_fecha);
             tvEstado = itemView.findViewById(R.id.tv_estado);
             btnCancelar = itemView.findViewById(R.id.btn_cancelar);
-            btnConfirmar = itemView.findViewById(R.id.btn_confirmar);
+            // btnConfirmar = itemView.findViewById(R.id.btn_confirmar); // TEMPORALMENTE OCULTO
             
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -93,12 +93,15 @@ public class TurnoAdapter extends RecyclerView.Adapter<TurnoAdapter.TurnoViewHol
                 }
             });
             
+            // TEMPORALMENTE OCULTO - Botón confirmar
+            /*
             btnConfirmar.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION && listener != null) {
                     listener.onConfirmarClick(turnos.get(position));
                 }
             });
+            */
         }
         
         public void bind(TurnoDTO turno) {
@@ -170,7 +173,7 @@ public class TurnoAdapter extends RecyclerView.Adapter<TurnoAdapter.TurnoViewHol
             boolean mostrarBotones = !esConfirmado && !esCancelado;
             
             btnCancelar.setVisibility(mostrarBotones ? View.VISIBLE : View.GONE);
-            btnConfirmar.setVisibility(mostrarBotones ? View.VISIBLE : View.GONE);
+            // btnConfirmar.setVisibility(mostrarBotones ? View.VISIBLE : View.GONE); // TEMPORALMENTE OCULTO
         }
         
         private String formatearFecha(String fecha) {

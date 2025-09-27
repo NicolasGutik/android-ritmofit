@@ -92,7 +92,8 @@
             android:scaleType="centerInside"
             android:padding="6dp" />
 
-        <!-- Botón Confirmar (✓ verde) - Esquina inferior derecha -->
+        <!-- Botón Confirmar (✓ verde) - Esquina inferior derecha - TEMPORALMENTE OCULTO -->
+        <!--
         <ImageButton
             android:id="@+id/btn_confirmar"
             android:layout_width="32dp"
@@ -106,6 +107,7 @@
             android:contentDescription="Confirmar reserva"
             android:scaleType="centerInside"
             android:padding="6dp" />
+        -->
 
     </RelativeLayout>
 
