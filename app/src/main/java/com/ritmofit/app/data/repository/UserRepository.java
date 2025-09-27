@@ -1,0 +1,11 @@
+package com.ritmofit.app.data.repository;
+
+import androidx.lifecycle.LiveData;
+
+import com.ritmofit.app.data.dto.ApiResult;
+import com.ritmofit.app.data.dto.UserDTO;
+
+public interface UserRepository {
+    LiveData<ApiResult<UserDTO>> getUserById(Long id);
+    LiveData<ApiResult<String>> updateUser(Long id, UserDTO user);
+}

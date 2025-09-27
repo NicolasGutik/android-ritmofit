@@ -38,11 +38,18 @@ public interface RitmoFitApiService {
     
     /**
      * Actualiza datos del usuario
-     * PUT /auth/update/{id}
+     * PUT /user/update/{id}
      */
-    @PUT("auth/update/{id}")
+    @PUT("user/update/{id}")
     @Headers("Content-Type: application/json")
     Call<String> actualizarUsuario(@Path("id") Long id, @Body UserDTO userDTO);
+
+    /**
+     * Trae los datos del usuario
+     * GET user/{id}
+     */
+    @GET("user/{id}")
+    Call<UserDTO> obtenerUsuarioPorId(@Path("id") Long id);
     
     // ========== CATÁLOGO DE CLASES ==========
     

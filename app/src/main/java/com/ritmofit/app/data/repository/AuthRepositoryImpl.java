@@ -83,30 +83,57 @@ public class AuthRepositoryImpl implements AuthRepository {
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Map<String, Object> responseData = response.body();
-                    
-                    // Guardar token y datos del usuario
+
+                    // 1) Guardar token (si vino)
+                    String token = null;
                     if (responseData.containsKey("token")) {
-                        String token = (String) responseData.get("token");
-                        guardarToken(token);
+                        Object t = responseData.get("token");
+                        if (t instanceof String) {
+                            token = (String) t;
+                            guardarToken(token);
+                        }
                     }
-                    
+
+                    // 2) Guardar usuario si vino en la respuesta
+                    boolean userGuardado = false;
                     if (responseData.containsKey("user")) {
                         Object userObj = responseData.get("user");
                         if (userObj instanceof Map) {
                             UserDTO user = gson.fromJson(gson.toJson(userObj), UserDTO.class);
                             guardarUsuario(user);
+                            userGuardado = true;
                         }
                     }
-                    
+
+                    // 3) Si NO vino 'user', lo traemos usando el id del JWT y lo cacheamos
+                    if (!userGuardado && token != null) {
+                        Long idFromJwt = com.ritmofit.app.util.JwtUtils.getUserIdFromToken(token);
+                        if (idFromJwt != null) {
+                            apiService.obtenerUsuarioPorId(idFromJwt).enqueue(new Callback<UserDTO>() {
+                                @Override
+                                public void onResponse(Call<UserDTO> call, Response<UserDTO> resp) {
+                                    if (resp.isSuccessful() && resp.body() != null) {
+                                        guardarUsuario(resp.body());
+                                        Log.d(TAG, "✅ Usuario cacheado post-login: " + resp.body());
+                                    } else {
+                                        Log.w(TAG, "⚠️ No se pudo cachear usuario post-login. code=" + resp.code());
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<UserDTO> call, Throwable t) {
+                                    Log.e(TAG, "❌ Fallo al traer usuario post-login", t);
+                                }
+                            });
+                        } else {
+                            Log.w(TAG, "⚠️ No se pudo extraer id del JWT para traer usuario");
+                        }
+                    }
+
                     result.setValue(new ApiResult.Success<>(responseData));
                 } else {
                     String errorMessage = "Error al validar OTP";
                     if (response.errorBody() != null) {
-                        try {
-                            errorMessage = response.errorBody().string();
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error reading error body", e);
-                        }
+                        try { errorMessage = response.errorBody().string(); } catch (Exception e) { Log.e(TAG, "Error reading error body", e); }
                     }
                     result.setValue(new ApiResult.Error<>(errorMessage));
                 }
@@ -183,18 +210,41 @@ public class AuthRepositoryImpl implements AuthRepository {
         
         return result;
     }
-    
+
     @Override
     public LiveData<ApiResult<UserDTO>> obtenerUsuarioActual() {
         MutableLiveData<ApiResult<UserDTO>> result = new MutableLiveData<>();
-        
-        UserDTO usuario = obtenerUsuarioGuardado();
-        if (usuario != null) {
-            result.setValue(new ApiResult.Success<>(usuario));
-        } else {
-            result.setValue(new ApiResult.Error<>("Usuario no encontrado"));
+
+        // 1) Intentar cache
+        UserDTO cache = obtenerUsuarioGuardado();
+        if (cache != null) {
+            result.setValue(new ApiResult.Success<>(cache));
+            return result;
         }
-        
+
+        // 2) Fallback: sacar id del JWT (claim "sub")
+        String token = obtenerToken();
+        Long idFromJwt = com.ritmofit.app.util.JwtUtils.getUserIdFromToken(token);
+        if (idFromJwt == null) {
+            result.setValue(new ApiResult.Error<>("No hay usuario en caché ni id en token"));
+            return result;
+        }
+
+        // 3) Traer del backend y cachear
+        result.setValue(new ApiResult.Loading<>());
+        apiService.obtenerUsuarioPorId(idFromJwt).enqueue(new retrofit2.Callback<UserDTO>() {
+            @Override public void onResponse(retrofit2.Call<UserDTO> call, retrofit2.Response<UserDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    guardarUsuario(response.body());
+                    result.setValue(new ApiResult.Success<>(response.body()));
+                } else {
+                    result.setValue(new ApiResult.Error<>("Error al obtener usuario: " + response.code()));
+                }
+            }
+            @Override public void onFailure(retrofit2.Call<UserDTO> call, Throwable t) {
+                result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage(), t));
+            }
+        });
         return result;
     }
     
