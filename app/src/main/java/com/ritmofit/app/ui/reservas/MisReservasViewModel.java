@@ -30,8 +30,9 @@ public class MisReservasViewModel extends ViewModel {
     }
     
     public void cargarReservas() {
-        LiveData<ApiResult<List<TurnoDTO>>> result = reservaRepository.obtenerMisReservas();
-        result.observeForever(apiResult -> reservas.setValue(apiResult));
+        reservaRepository.obtenerMisReservas().observeForever(apiResult -> {
+            reservas.setValue(apiResult);
+        });
     }
 }
 

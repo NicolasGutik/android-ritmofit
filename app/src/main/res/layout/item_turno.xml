@@ -38,6 +38,16 @@
             android:textColor="@color/gray_dark"
             tools:text="Sede Norte" />
 
+        <!-- Profesor -->
+        <TextView
+            android:id="@+id/tv_profesor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp"
+            android:textColor="@color/gray_medium"
+            tools:text="Prof. María González" />
+
         <!-- Fecha -->
         <TextView
             android:id="@+id/tv_fecha"
