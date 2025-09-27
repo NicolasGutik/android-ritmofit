@@ -135,16 +135,45 @@ public class LoginActivity extends AppCompatActivity {
         
         showLoading(true);
         hideError();
-        
+
         authRepository.validarOTP(currentEmail, otp).observe(this, new Observer<ApiResult<Map<String, Object>>>() {
             @Override
             public void onChanged(ApiResult<Map<String, Object>> result) {
                 showLoading(false);
-                
+
                 if (result instanceof ApiResult.Success) {
-                    // Login exitoso, navegar a MainActivity
+                    Map<String, Object> responseData = ((ApiResult.Success<Map<String, Object>>) result).getData();
+
+                    // 1) Extraer token de la respuesta (ajustá las keys a tu backend)
+                    String token = null;
+                    if (responseData != null) {
+                        Object t1 = responseData.get("token");
+                        Object t2 = responseData.get("jwt");
+                        Object t3 = responseData.get("accessToken");
+                        token = (t1 != null ? String.valueOf(t1) : (t2 != null ? String.valueOf(t2) : (t3 != null ? String.valueOf(t3) : null)));
+                    }
+
+                    if (!TextUtils.isEmpty(token)) {
+                        // 2) Guardar token (según tu implementación actual del repo)
+                        authRepository.guardarToken(token);
+                    }
+
+                    // 3) (Opcional) Guardar el usuario si el backend lo devuelve en el login
+                    //    Si tu respuesta trae un objeto "user" con los datos:
+            /*
+            Object userObj = responseData.get("user");
+            if (userObj instanceof Map) {
+                // Convertir ese Map a UserDTO con Gson, o tener un método en el repo:
+                UserDTO user = mapToUserDto((Map<String, Object>) userObj); // implementá esta helper o usá Gson
+                authRepository.guardarUsuario(user);
+            }
+            */
+
                     Toast.makeText(LoginActivity.this, "¡Bienvenido a RitmoFit!", Toast.LENGTH_SHORT).show();
+
+                    // 4) Navegar recién después de guardar credenciales
                     navigateToMain();
+
                 } else if (result instanceof ApiResult.Error) {
                     showError("Código OTP inválido. Intenta nuevamente.");
                 }
