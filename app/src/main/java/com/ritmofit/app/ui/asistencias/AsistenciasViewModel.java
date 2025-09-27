@@ -59,4 +59,18 @@ public class AsistenciasViewModel extends ViewModel {
             }
         });
     }
+    
+    public void obtenerAsistenciasConFiltroCompleto(Long userId, String fechaDesde, String fechaHasta, String disciplina) {
+        _isLoading.setValue(true);
+        _error.setValue(null);
+        
+        asistenciaRepository.obtenerAsistenciasConFiltroCompleto(userId, fechaDesde, fechaHasta, disciplina).observeForever(asistencias -> {
+            _isLoading.setValue(false);
+            if (asistencias != null) {
+                _asistencias.setValue(asistencias);
+            } else {
+                _error.setValue("Error al cargar asistencias con filtro completo");
+            }
+        });
+    }
 }

@@ -133,6 +133,18 @@ public interface RitmoFitApiService {
         @Query("fechaHasta") String fechaHasta
     );
     
+    /**
+     * Obtiene historial de asistencias del usuario con filtro de fechas y disciplina
+     * GET /turnos/asistencias/{userId}?fechaDesde={fechaDesde}&fechaHasta={fechaHasta}&disciplina={disciplina}
+     */
+    @GET("turnos/asistencias/{userId}")
+    Call<List<AsistenciaDTO>> obtenerAsistenciasConFiltroCompleto(
+        @Path("userId") Long userId,
+        @Query("fechaDesde") String fechaDesde,
+        @Query("fechaHasta") String fechaHasta,
+        @Query("disciplina") String disciplina
+    );
+    
     // ========== CLASIFICACIONES ==========
     
     /**
