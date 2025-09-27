@@ -3,6 +3,7 @@ package com.ritmofit.app.di;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ritmofit.app.data.api.RitmoFitApiService;
@@ -37,10 +38,10 @@ public class NetworkModule {
     @Singleton
     public Gson provideGson() {
         return new GsonBuilder()
-                .setLenient()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
     }
-    
+
     @Provides
     @Singleton
     public OkHttpClient provideOkHttpClient(@ApplicationContext Context context, SharedPreferences encryptedPrefs) {

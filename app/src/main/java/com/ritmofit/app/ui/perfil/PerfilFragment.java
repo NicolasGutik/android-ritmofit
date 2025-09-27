@@ -110,6 +110,11 @@ public class PerfilFragment extends Fragment {
         });
     }
 
+    public void onResume() {
+        super.onResume();
+        viewModel.reload();
+    }
+
     private String nullSafe(String s) { return s == null ? "" : s; }
 }
 
