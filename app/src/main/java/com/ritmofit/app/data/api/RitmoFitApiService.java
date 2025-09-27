@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface RitmoFitApiService {
-    
+
     // ========== AUTENTICACIÓN ==========
-    
+
     /**
      * Envía OTP al email del usuario
      * POST /auth/login
@@ -19,7 +19,7 @@ public interface RitmoFitApiService {
     @POST("auth/login")
     @Headers("Content-Type: application/json")
     Call<Map<String, Object>> enviarOTP(@Body Map<String, String> body);
-    
+
     /**
      * Valida OTP y obtiene JWT
      * POST /auth/validate
@@ -27,7 +27,7 @@ public interface RitmoFitApiService {
     @POST("auth/validate")
     @Headers("Content-Type: application/json")
     Call<Map<String, Object>> validarOTP(@Body Map<String, String> body);
-    
+
     /**
      * Registra nuevo usuario
      * POST /auth/register
@@ -35,15 +35,23 @@ public interface RitmoFitApiService {
     @POST("auth/register")
     @Headers("Content-Type: application/json")
     Call<Map<String, Object>> registrarUsuario(@Body UserDTO userDTO);
-    
+
+    // ========== PERFIL ==========
+    /**
+     * Ver datos del usuario
+     * GET /user/{id}
+     */
+    @GET("/user/{id}")
+    @Headers("Content-Type: application/json")
+    Call<UserDTO> obtenerUserById (@Path("id") Long id);
+
     /**
      * Actualiza datos del usuario
      * PUT /auth/update/{id}
      */
-    @PUT("auth/update/{id}")
+    @PUT("user/update/{id}")
     @Headers("Content-Type: application/json")
     Call<String> actualizarUsuario(@Path("id") Long id, @Body UserDTO userDTO);
-    
     // ========== CATÁLOGO DE CLASES ==========
     
     /**

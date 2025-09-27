@@ -158,33 +158,6 @@ public class AuthRepositoryImpl implements AuthRepository {
     }
     
     @Override
-    public LiveData<ApiResult<String>> actualizarUsuario(Long id, UserDTO userDTO) {
-        MutableLiveData<ApiResult<String>> result = new MutableLiveData<>();
-        result.setValue(new ApiResult.Loading<>());
-        
-        apiService.actualizarUsuario(id, userDTO).enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    // Actualizar usuario guardado
-                    guardarUsuario(userDTO);
-                    result.setValue(new ApiResult.Success<>(response.body()));
-                } else {
-                    result.setValue(new ApiResult.Error<>("Error al actualizar usuario: " + response.code()));
-                }
-            }
-            
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e(TAG, "Error al actualizar usuario", t);
-                result.setValue(new ApiResult.Error<>("Error de conexión: " + t.getMessage(), t));
-            }
-        });
-        
-        return result;
-    }
-    
-    @Override
     public LiveData<ApiResult<UserDTO>> obtenerUsuarioActual() {
         MutableLiveData<ApiResult<UserDTO>> result = new MutableLiveData<>();
         

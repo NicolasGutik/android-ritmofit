@@ -9,6 +9,8 @@ import com.ritmofit.app.data.repository.ClaseRepository;
 import com.ritmofit.app.data.repository.ClaseRepositoryImpl;
 import com.ritmofit.app.data.repository.ReservaRepository;
 import com.ritmofit.app.data.repository.ReservaRepositoryImpl;
+import com.ritmofit.app.data.repository.UserRepository;
+import com.ritmofit.app.data.repository.UserRepositoryImpl;
 
 import javax.inject.Singleton;
 
@@ -24,7 +26,11 @@ public abstract class RepositoryModule {
     @Binds
     @Singleton
     public abstract AuthRepository bindAuthRepository(AuthRepositoryImpl authRepositoryImpl);
-    
+
+    @Binds
+    @Singleton
+    public abstract UserRepository bindUserRepository(UserRepositoryImpl impl);
+
     @Binds
     @Singleton
     public abstract ClaseRepository bindClaseRepository(ClaseRepositoryImpl claseRepositoryImpl);

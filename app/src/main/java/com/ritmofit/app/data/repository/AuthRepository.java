@@ -23,11 +23,8 @@ public interface AuthRepository {
          * Registra un nuevo usuario
          */
         LiveData<ApiResult<Map<String, Object>>> registrarUsuario(UserDTO userDTO);
-    
-    /**
-     * Actualiza datos del usuario
-     */
-    LiveData<ApiResult<String>> actualizarUsuario(Long id, UserDTO userDTO);
+
+
     
     /**
      * Obtiene el usuario actual
