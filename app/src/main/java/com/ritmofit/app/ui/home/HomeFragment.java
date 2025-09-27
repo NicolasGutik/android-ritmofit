@@ -111,8 +111,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        viewModel.iniciar();
-    }
+         viewModel.iniciar();
+     }
+     
+     @Override
+     public void onResume() {
+         super.onResume();
+         // Refrescar clases cuando se vuelve a la pantalla
+         viewModel.recargarClases();
+     }
 
     private void handleClasesResult(ApiResult<RespuestaPaginadaDTO<ClaseDTO>> result) {
         if (result instanceof ApiResult.Loading) {
