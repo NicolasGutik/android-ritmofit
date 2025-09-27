@@ -30,8 +30,22 @@ public class MisReservasViewModel extends ViewModel {
     }
     
     public void cargarReservas() {
-        LiveData<ApiResult<List<TurnoDTO>>> result = reservaRepository.obtenerMisReservas();
-        result.observeForever(apiResult -> reservas.setValue(apiResult));
+        reservaRepository.obtenerMisReservas().observeForever(apiResult -> {
+            reservas.setValue(apiResult);
+        });
+    }
+    
+    public void refrescarReservas() {
+        cargarReservas();
+    }
+    
+    public void cancelarReserva(Long turnoId) {
+        reservaRepository.cancelarReserva(turnoId).observeForever(apiResult -> {
+            if (apiResult instanceof com.ritmofit.app.data.dto.ApiResult.Success) {
+                // Refrescar la lista después de cancelar
+                cargarReservas();
+            }
+        });
     }
 }
 

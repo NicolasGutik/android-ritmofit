@@ -43,7 +43,29 @@ public class ReservaRepositoryImpl implements ReservaRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     result.setValue(new ApiResult.Success<>(response.body()));
                 } else {
-                    result.setValue(new ApiResult.Error<>("Error al crear reserva: " + response.code()));
+                    // Extraer el mensaje de error específico del backend
+                    String errorMessage = "Error al crear reserva";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBody = response.errorBody().string();
+                            Log.d(TAG, "Error body del backend: " + errorBody);
+                            
+                            // Parsear el JSON de error: {"error": "mensaje específico"}
+                            if (errorBody.contains("\"error\"")) {
+                                // Buscar el valor del campo "error"
+                                int startIndex = errorBody.indexOf("\"error\":\"") + 9;
+                                int endIndex = errorBody.indexOf("\"", startIndex);
+                                if (startIndex > 8 && endIndex > startIndex) {
+                                    errorMessage = errorBody.substring(startIndex, endIndex);
+                                    Log.d(TAG, "Mensaje de error extraído: " + errorMessage);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error al parsear mensaje de error", e);
+                        errorMessage = "Error de conexión";
+                    }
+                    result.setValue(new ApiResult.Error<>(errorMessage));
                 }
             }
             

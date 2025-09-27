@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,8 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ritmofit.app.R;
+import com.ritmofit.app.data.dto.ApiResult;
 import com.ritmofit.app.data.dto.TurnoDTO;
 import com.ritmofit.app.ui.adapters.TurnoAdapter;
+
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -24,6 +29,8 @@ public class MisReservasFragment extends Fragment {
     
     private MisReservasViewModel viewModel;
     private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private TextView tvEmpty;
     private TurnoAdapter adapter;
     
     @Override
@@ -39,6 +46,9 @@ public class MisReservasFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_mis_reservas, container, false);
         
         recyclerView = view.findViewById(R.id.recycler_view_reservas);
+        progressBar = view.findViewById(R.id.progress_bar);
+        tvEmpty = view.findViewById(R.id.tv_empty);
+        
         setupRecyclerView();
         
         return view;
@@ -49,33 +59,111 @@ public class MisReservasFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         
         // Observar cambios en las reservas
-        viewModel.getReservas().observe(getViewLifecycleOwner(), result -> {
-            if (result instanceof com.ritmofit.app.data.dto.ApiResult.Loading) {
-                // Mostrar loading
-                Toast.makeText(getContext(), "Cargando reservas...", Toast.LENGTH_SHORT).show();
-            } else if (result instanceof com.ritmofit.app.data.dto.ApiResult.Success) {
-                com.ritmofit.app.data.dto.ApiResult.Success<java.util.List<TurnoDTO>> success = 
-                    (com.ritmofit.app.data.dto.ApiResult.Success<java.util.List<TurnoDTO>>) result;
-                adapter.updateTurnos(success.getData());
-            } else if (result instanceof com.ritmofit.app.data.dto.ApiResult.Error) {
-                com.ritmofit.app.data.dto.ApiResult.Error<java.util.List<TurnoDTO>> error = 
-                    (com.ritmofit.app.data.dto.ApiResult.Error<java.util.List<TurnoDTO>>) result;
-                Toast.makeText(getContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        viewModel.getReservas().observe(getViewLifecycleOwner(), this::handleReservasResult);
         
         // Cargar reservas
         viewModel.cargarReservas();
     }
     
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refrescar reservas cuando se vuelve a la pantalla
+        viewModel.refrescarReservas();
+    }
+    
+    private void handleReservasResult(ApiResult<List<TurnoDTO>> result) {
+        if (result instanceof ApiResult.Loading) {
+            showLoading(true);
+        } else if (result instanceof ApiResult.Success) {
+            showLoading(false);
+            ApiResult.Success<List<TurnoDTO>> success = (ApiResult.Success<List<TurnoDTO>>) result;
+            List<TurnoDTO> reservas = success.getData();
+            
+            if (reservas != null && !reservas.isEmpty()) {
+                adapter.updateTurnos(reservas);
+                showEmptyState(false);
+            } else {
+                showEmptyState(true);
+            }
+        } else if (result instanceof ApiResult.Error) {
+            showLoading(false);
+            ApiResult.Error<List<TurnoDTO>> error = (ApiResult.Error<List<TurnoDTO>>) result;
+            Toast.makeText(getContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            showEmptyState(true);
+        }
+    }
+    
+    private void showLoading(boolean show) {
+        if (progressBar != null) {
+            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+    
+    private void showEmptyState(boolean show) {
+        if (tvEmpty != null) {
+            tvEmpty.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+        if (recyclerView != null) {
+            recyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+    
     private void setupRecyclerView() {
-        adapter = new TurnoAdapter(turno -> {
-            // TODO: Implementar cancelación de reserva
-            Toast.makeText(getContext(), "Cancelar reserva: " + turno.getId(), Toast.LENGTH_SHORT).show();
+        adapter = new TurnoAdapter(new TurnoAdapter.OnTurnoClickListener() {
+            @Override
+            public void onTurnoClick(TurnoDTO turno) {
+                // Mostrar detalles de la reserva
+                String mensaje = String.format("Reserva ID: %d\nClase: %s\nFecha: %s\nEstado: %s", 
+                    turno.getId(), 
+                    turno.getDisciplina(), 
+                    turno.getFechaClase(), 
+                    turno.getEstado());
+                Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
+            }
+            
+            @Override
+            public void onCancelarClick(TurnoDTO turno) {
+                mostrarDialogoCancelar(turno);
+            }
+            
+            @Override
+            public void onConfirmarClick(TurnoDTO turno) {
+                mostrarDialogoConfirmar(turno);
+            }
         });
         
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+    }
+    
+    private void mostrarDialogoCancelar(TurnoDTO turno) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Cancelar Reserva")
+            .setMessage("¿Estás seguro de que quieres cancelar esta reserva?")
+            .setPositiveButton("Sí, Cancelar", (dialog, which) -> {
+                // Cancelar la reserva
+                viewModel.cancelarReserva(turno.getId());
+                Toast.makeText(getContext(), "Reserva cancelada exitosamente", Toast.LENGTH_SHORT).show();
+            })
+            .setNegativeButton("No", (dialog, which) -> {
+                dialog.dismiss();
+            })
+            .show();
+    }
+    
+    private void mostrarDialogoConfirmar(TurnoDTO turno) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Confirmar Reserva")
+            .setMessage("¿Quieres confirmar tu asistencia a esta clase?")
+            .setPositiveButton("Sí, Confirmar", (dialog, which) -> {
+                // TODO: Implementar confirmación de reserva
+                Toast.makeText(getContext(), "Funcionalidad de confirmación en desarrollo", Toast.LENGTH_SHORT).show();
+            })
+            .setNegativeButton("No", (dialog, which) -> {
+                dialog.dismiss();
+            })
+            .show();
     }
 }
 

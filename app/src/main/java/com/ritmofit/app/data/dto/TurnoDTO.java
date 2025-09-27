@@ -21,16 +21,19 @@ public class TurnoDTO {
     @SerializedName("fechaClase")
     private String fechaClase;
     
-    @SerializedName("sede")
+    @SerializedName("claseFecha")
+    private String claseFecha;
+    
+    @SerializedName("claseSede")
     private String sede;
     
-    @SerializedName("disciplina")
+    @SerializedName("claseDisciplina")
     private String disciplina;
     
     @SerializedName("lugar")
     private String lugar;
     
-    @SerializedName("profesor")
+    @SerializedName("profesorNombre")
     private String profesor;
     
     // Constructores
@@ -69,6 +72,9 @@ public class TurnoDTO {
     
     public String getFechaClase() { return fechaClase; }
     public void setFechaClase(String fechaClase) { this.fechaClase = fechaClase; }
+    
+    public String getClaseFecha() { return claseFecha; }
+    public void setClaseFecha(String claseFecha) { this.claseFecha = claseFecha; }
     
     public String getSede() { return sede; }
     public void setSede(String sede) { this.sede = sede; }
