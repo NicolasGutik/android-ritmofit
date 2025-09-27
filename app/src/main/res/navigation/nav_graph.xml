@@ -42,13 +42,6 @@
         android:label="@string/nav_reservas"
         tools:layout="@layout/fragment_mis_reservas" />
 
-    <!-- Asistencias Fragment -->
-    <fragment
-        android:id="@+id/asistenciasFragment"
-        android:name="com.ritmofit.app.ui.asistencias.AsistenciasFragment"
-        android:label="Asistencias"
-        tools:layout="@layout/fragment_asistencias" />
-
     <!-- Historial Fragment -->
     <fragment
         android:id="@+id/historialFragment"

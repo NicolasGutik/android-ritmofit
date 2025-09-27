@@ -29,9 +29,9 @@ import android.content.SharedPreferences;
 public class NetworkModule {
     
     private static final String TAG = "NetworkModule";
-    private static final String BASE_URL = "http://10.0.2.2:8081/"; // Emulador Android
-    // Para emulador Android usar: "http://10.0.2.2:8081/"
-    // Para dispositivo físico usar: "http://[TU_IP_LOCAL]:8081/"
+    private static final String BASE_URL = "http://192.168.1.9:8080/"; // IP local
+    // Para emulador Android usar: "http://10.0.2.2:8080/"
+    // Para dispositivo físico usar: "http://[TU_IP_LOCAL]:8080/"
     
     @Provides
     @Singleton

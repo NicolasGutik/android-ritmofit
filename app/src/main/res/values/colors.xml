@@ -17,10 +17,4 @@
     <color name="gray_light">#F5F5F5</color>
     <color name="gray_medium">#9E9E9E</color>
     <color name="gray_dark">#424242</color>
-    
-    <!-- Colores adicionales -->
-    <color name="background_light">#FAFAFA</color>
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
-    <color name="card_stroke">#E0E0E0</color>
 </resources>

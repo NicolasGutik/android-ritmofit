@@ -11,11 +11,6 @@
         android:title="@string/nav_reservas" />
 
     <item
-        android:id="@+id/asistenciasFragment"
-        android:icon="@drawable/ic_nav_reservas"
-        android:title="Asistencias" />
-
-    <item
         android:id="@+id/perfilFragment"
         android:icon="@drawable/ic_nav_perfil"
         android:title="@string/nav_perfil" />
