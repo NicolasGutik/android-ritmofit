@@ -2,6 +2,7 @@ package com.ritmofit.app.ui.asistencias;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.ritmofit.app.R;
 import com.ritmofit.app.data.dto.AsistenciaDTO;
 import com.ritmofit.app.data.dto.UserDTO;
@@ -38,13 +40,18 @@ public class AsistenciasFragment extends Fragment {
     private RecyclerView recyclerViewAsistencias;
     private TextView textViewEmpty;
     private TextView textViewFiltroFechas;
+    private TextInputEditText editTextDisciplina;
     private MaterialButton btnFiltrarFechas;
     private MaterialButton btnLimpiarFiltros;
+    private MaterialButton btnAplicarDisciplina;
+    private MaterialButton btnLimpiarDisciplina;
     private AsistenciaAdapter adapter;
     
     private Calendar fechaDesde = Calendar.getInstance();
     private Calendar fechaHasta = Calendar.getInstance();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    
+    private String disciplinaFiltro = null;
     
     private AsistenciasViewModel viewModel;
     
@@ -61,7 +68,7 @@ public class AsistenciasFragment extends Fragment {
         initializeViews(view);
         setupRecyclerView();
         setupViewModel();
-        setupDateFilter();
+        setupFilters();
         loadInitialData();
         
         return view;
@@ -71,8 +78,11 @@ public class AsistenciasFragment extends Fragment {
         recyclerViewAsistencias = view.findViewById(R.id.recyclerViewAsistencias);
         textViewEmpty = view.findViewById(R.id.textViewEmpty);
         textViewFiltroFechas = view.findViewById(R.id.textViewFiltroFechas);
+        editTextDisciplina = view.findViewById(R.id.editTextDisciplina);
         btnFiltrarFechas = view.findViewById(R.id.btnFiltrarFechas);
         btnLimpiarFiltros = view.findViewById(R.id.btnLimpiarFiltros);
+        btnAplicarDisciplina = view.findViewById(R.id.btnAplicarDisciplina);
+        btnLimpiarDisciplina = view.findViewById(R.id.btnLimpiarDisciplina);
     }
     
     private void setupRecyclerView() {
@@ -105,7 +115,7 @@ public class AsistenciasFragment extends Fragment {
         });
     }
     
-    private void setupDateFilter() {
+    private void setupFilters() {
         // Configurar fechas por defecto (último mes)
         fechaHasta.setTimeInMillis(System.currentTimeMillis());
         fechaDesde.setTimeInMillis(System.currentTimeMillis());
@@ -118,6 +128,12 @@ public class AsistenciasFragment extends Fragment {
         
         // Botón para limpiar filtros
         btnLimpiarFiltros.setOnClickListener(v -> clearFilters());
+        
+        // Botón para aplicar filtro de disciplina
+        btnAplicarDisciplina.setOnClickListener(v -> aplicarFiltroDisciplina());
+        
+        // Botón para limpiar filtro de disciplina
+        btnLimpiarDisciplina.setOnClickListener(v -> limpiarFiltroDisciplina());
     }
     
     private void showDateRangePicker() {
@@ -165,6 +181,10 @@ public class AsistenciasFragment extends Fragment {
         fechaDesde.setTimeInMillis(System.currentTimeMillis());
         fechaDesde.add(Calendar.MONTH, -1);
         
+        // Limpiar filtro de disciplina
+        disciplinaFiltro = null;
+        editTextDisciplina.setText("");
+        
         updateFilterText();
         applyFilters();
         Toast.makeText(getContext(), "Filtros limpiados", Toast.LENGTH_SHORT).show();
@@ -177,7 +197,13 @@ public class AsistenciasFragment extends Fragment {
         // Obtener usuario actual
         UserDTO usuario = authRepository.obtenerUsuarioGuardado();
         if (usuario != null && usuario.getId() != null) {
-            viewModel.obtenerAsistenciasConFiltro(usuario.getId(), fechaDesdeStr, fechaHastaStr);
+            if (disciplinaFiltro != null && !disciplinaFiltro.trim().isEmpty()) {
+                // Usar filtro completo con disciplina
+                viewModel.obtenerAsistenciasConFiltroCompleto(usuario.getId(), fechaDesdeStr, fechaHastaStr, disciplinaFiltro);
+            } else {
+                // Usar filtro solo con fechas
+                viewModel.obtenerAsistenciasConFiltro(usuario.getId(), fechaDesdeStr, fechaHastaStr);
+            }
         } else {
             Toast.makeText(getContext(), "Error: Usuario no encontrado", Toast.LENGTH_SHORT).show();
         }
@@ -201,5 +227,26 @@ public class AsistenciasFragment extends Fragment {
             recyclerViewAsistencias.setVisibility(View.VISIBLE);
             textViewEmpty.setVisibility(View.GONE);
         }
+    }
+    
+    private void aplicarFiltroDisciplina() {
+        String disciplina = editTextDisciplina.getText() != null ? 
+            editTextDisciplina.getText().toString().trim() : "";
+        
+        if (TextUtils.isEmpty(disciplina)) {
+            Toast.makeText(getContext(), "Por favor ingresa una disciplina", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        disciplinaFiltro = disciplina;
+        applyFilters();
+        Toast.makeText(getContext(), "Filtro aplicado: " + disciplina, Toast.LENGTH_SHORT).show();
+    }
+    
+    private void limpiarFiltroDisciplina() {
+        disciplinaFiltro = null;
+        editTextDisciplina.setText("");
+        applyFilters();
+        Toast.makeText(getContext(), "Filtro de disciplina limpiado", Toast.LENGTH_SHORT).show();
     }
 }

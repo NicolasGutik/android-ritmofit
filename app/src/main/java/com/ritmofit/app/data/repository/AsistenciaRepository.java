@@ -68,4 +68,26 @@ public class AsistenciaRepository {
         
         return liveData;
     }
+    
+    public LiveData<List<AsistenciaDTO>> obtenerAsistenciasConFiltroCompleto(Long userId, String fechaDesde, String fechaHasta, String disciplina) {
+        MutableLiveData<List<AsistenciaDTO>> liveData = new MutableLiveData<>();
+        
+        apiService.obtenerAsistenciasConFiltroCompleto(userId, fechaDesde, fechaHasta, disciplina).enqueue(new Callback<List<AsistenciaDTO>>() {
+            @Override
+            public void onResponse(Call<List<AsistenciaDTO>> call, Response<List<AsistenciaDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    liveData.setValue(response.body());
+                } else {
+                    liveData.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AsistenciaDTO>> call, Throwable t) {
+                liveData.setValue(null);
+            }
+        });
+        
+        return liveData;
+    }
 }
