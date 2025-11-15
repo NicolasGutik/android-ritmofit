@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Contenido principal -->
+        <LinearLayout
+            android:id="@+id/layout_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="60dp">
+
+        <!-- Disciplina -->
+        <TextView
+            android:id="@+id/tv_disciplina"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/ritmo_fit_primary"
+            tools:text="Yoga" />
+
+        <!-- Sede -->
+        <TextView
+            android:id="@+id/tv_sede"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            android:textColor="@color/gray_dark"
+            tools:text="Sede Norte" />
+
+        <!-- Profesor -->
+        <TextView
+            android:id="@+id/tv_profesor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp"
+            android:textColor="@color/gray_medium"
+            tools:text="Prof. María González" />
+
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/tv_fecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            android:textColor="@color/gray_dark"
+            tools:text="15/01/2025 10:00" />
+
+        <!-- Estado -->
+        <TextView
+            android:id="@+id/tv_estado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="CONFIRMADO" />
+
+        </LinearLayout>
+
+        <!-- Botón Cancelar (X roja) - Esquina superior derecha -->
+        <ImageButton
+            android:id="@+id/btn_cancelar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_red_background"
+            android:src="@drawable/ic_close_white"
+            android:contentDescription="Cancelar reserva"
+            android:scaleType="centerInside"
+            android:padding="6dp" />
+
+        <!-- Botón Confirmar (✓ verde) - Esquina inferior derecha - TEMPORALMENTE OCULTO -->
+        <!--
+        <ImageButton
+            android:id="@+id/btn_confirmar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_green_background"
+            android:src="@drawable/ic_check_white"
+            android:contentDescription="Confirmar reserva"
+            android:scaleType="centerInside"
+            android:padding="6dp" />
+        -->
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>
+
