@@ -11,6 +11,7 @@ import com.ritmofit.app.data.dto.ApiResult;
 import com.ritmofit.app.data.dto.ClaseDTO;
 import com.ritmofit.app.data.dto.FiltroClaseDTO;
 import com.ritmofit.app.data.dto.RespuestaPaginadaDTO;
+import com.ritmofit.app.data.dto.RespuestaPaginadaHome;
 import com.ritmofit.app.data.dto.TurnoDTO;
 
 import java.util.List;
@@ -200,6 +201,35 @@ public class ClaseRepositoryImpl implements ClaseRepository {
         });
         
         return result;
+    }
+
+    @Override
+    public LiveData<ApiResult<RespuestaPaginadaHome<ClaseDTO>>> obtenerClasesHome(Long userId) {
+        MutableLiveData<ApiResult<RespuestaPaginadaHome<ClaseDTO>>> ld = new MutableLiveData<>();
+        ld.setValue(new ApiResult.Loading<>());
+
+        apiService.getClasesHome(userId /*, agregar bearer si tu endpoint lo exige */)
+                .enqueue(new Callback<RespuestaPaginadaHome<ClaseDTO>>() {
+                    @Override
+                    public void onResponse(
+                            Call<RespuestaPaginadaHome<ClaseDTO>> call,
+                            Response<RespuestaPaginadaHome<ClaseDTO>> resp) {
+
+                        if (resp.isSuccessful() && resp.body()!=null) {
+                            ld.setValue(new ApiResult.Success<>(resp.body()));
+                        } else {
+                            ld.setValue(new ApiResult.Error<>("Error al obtener home: " + resp.code()));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RespuestaPaginadaHome<ClaseDTO>> call, Throwable t) {
+                        Log.e(TAG, "obtenerClasesHome fail", t);
+                        ld.setValue(new ApiResult.Error<>("Conexión: " + t.getMessage(), t));
+                    }
+                });
+
+        return ld;
     }
 }
 

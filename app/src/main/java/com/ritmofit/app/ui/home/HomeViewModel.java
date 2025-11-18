@@ -10,6 +10,9 @@ import com.ritmofit.app.data.dto.ApiResult;
 import com.ritmofit.app.data.dto.ClaseDTO;
 import com.ritmofit.app.data.dto.FiltroClaseDTO;
 import com.ritmofit.app.data.dto.RespuestaPaginadaDTO;
+import com.ritmofit.app.data.dto.RespuestaPaginadaHome;
+import com.ritmofit.app.data.dto.UserDTO;
+import com.ritmofit.app.data.repository.AuthRepository;
 import com.ritmofit.app.data.repository.ClaseRepository;
 
 import java.text.SimpleDateFormat;
@@ -29,6 +32,7 @@ public class HomeViewModel extends ViewModel {
     private static final int SIZE_DEFAULT = 20;
 
     private final ClaseRepository claseRepository;
+    private final AuthRepository authRepository;
     private final MediatorLiveData<ApiResult<RespuestaPaginadaDTO<ClaseDTO>>> clases = new MediatorLiveData<>();
     private LiveData<ApiResult<RespuestaPaginadaDTO<ClaseDTO>>> clasesSource;
 
@@ -46,11 +50,14 @@ public class HomeViewModel extends ViewModel {
 
     private String filtroSede;
     private String filtroDisciplina;
+
+    private boolean usarPreferencias = true;
     private boolean initialized = false;
 
     @Inject
-    public HomeViewModel(ClaseRepository claseRepository) {
+    public HomeViewModel(ClaseRepository claseRepository, AuthRepository authRepository) {
         this.claseRepository = claseRepository;
+        this.authRepository = authRepository;
     }
 
     public LiveData<ApiResult<RespuestaPaginadaDTO<ClaseDTO>>> getClases() {
@@ -72,10 +79,19 @@ public class HomeViewModel extends ViewModel {
     public void iniciar() {
         if (!initialized) {
             initialized = true;
+            usarPreferencias = true;
+            cargarClasesPorPreferencias();
             cargarOpcionesFiltros();
-            aplicarFiltros(null, null, null);
         } else {
-            recargarClases();
+            refrescar();
+        }
+    }
+
+    public void refrescar() {
+        if (usarPreferencias) {
+            cargarClasesPorPreferencias();
+        } else {
+            aplicarFiltros(filtroSede, filtroDisciplina, filtroFechaMillis.getValue());
         }
     }
 
@@ -84,6 +100,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void aplicarFiltros(@Nullable String sede, @Nullable String disciplina, @Nullable Long fechaMillis) {
+        usarPreferencias = false;
         filtroSede = normalizarTexto(sede);
         filtroDisciplina = normalizarTexto(disciplina);
         filtroFechaMillis.setValue(fechaMillis);
@@ -110,6 +127,8 @@ public class HomeViewModel extends ViewModel {
         adjuntarClases(claseRepository.obtenerClases(filtro));
         actualizarResumen();
     }
+
+
 
     @Nullable
     public String getFiltroSede() {
@@ -199,5 +218,56 @@ public class HomeViewModel extends ViewModel {
         }
         String trimmed = valor.trim();
         return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private void cargarClasesPorPreferencias() {
+        usarPreferencias = true;
+        LiveData<ApiResult<UserDTO>> userLive = authRepository.obtenerUsuarioActual();
+
+        // Nos enganchamos a ese LiveData temporalmente
+        MediatorLiveData<ApiResult<RespuestaPaginadaDTO<ClaseDTO>>> bridge = new MediatorLiveData<>();
+        bridge.setValue(new ApiResult.Loading<>());
+
+        bridge.addSource(userLive, userRes -> {
+            if (userRes instanceof ApiResult.Success) {
+                Long userId = ((ApiResult.Success<UserDTO>) userRes).getData().getId();
+                // ya tenemos el userId → pedimos las clases por preferencias
+                LiveData<ApiResult<RespuestaPaginadaHome<ClaseDTO>>> src = claseRepository.obtenerClasesHome(userId);
+
+                bridge.addSource(src, r -> {
+                    if (r instanceof ApiResult.Loading) {
+                        bridge.setValue(new ApiResult.Loading<>());
+                    } else if (r instanceof ApiResult.Error) {
+                        ApiResult.Error<?> e = (ApiResult.Error<?>) r;
+                        bridge.setValue(new ApiResult.Error<>(e.getMessage(), e.getThrowable()));
+                    } else if (r instanceof ApiResult.Success) {
+                        RespuestaPaginadaHome<ClaseDTO> home = ((ApiResult.Success<RespuestaPaginadaHome<ClaseDTO>>) r).getData();
+                        RespuestaPaginadaDTO<ClaseDTO> dto = new RespuestaPaginadaDTO<>();
+                        dto.setContenido(home.getContenido());
+                        dto.setPagina(home.getPagina());
+                        dto.setTamanio(home.getTamanio());
+                        dto.setTotalElementos(home.getTotalElementos());
+                        dto.setTotalPaginas(home.getTotalPaginas());
+                        dto.setPrimera(home.isPrimera());
+                        dto.setUltima(home.isUltima());
+                        dto.setTieneAnterior(home.isTieneAnterior());
+                        dto.setTieneSiguiente(home.isTieneSiguiente());
+                        bridge.setValue(new ApiResult.Success<>(dto));
+                    }
+                });
+
+                // ya no necesitamos seguir escuchando al user
+                bridge.removeSource(userLive);
+
+            } else if (userRes instanceof ApiResult.Error) {
+                ApiResult.Error<?> e = (ApiResult.Error<?>) userRes;
+                bridge.setValue(new ApiResult.Error<>("No se pudo obtener el usuario actual", e.getThrowable()));
+                bridge.removeSource(userLive);
+            }
+        });
+
+        // conecta el bridge con tu Mediator principal
+        adjuntarClases(bridge);
+        filtroResumen.setValue("Preferencias del usuario");
     }
 }

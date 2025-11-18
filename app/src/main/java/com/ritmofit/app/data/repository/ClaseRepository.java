@@ -9,6 +9,7 @@ import com.ritmofit.app.data.dto.RespuestaPaginadaDTO;
 import com.ritmofit.app.data.dto.TurnoDTO;
 
 import java.util.List;
+import com.ritmofit.app.data.dto.RespuestaPaginadaHome;
 
 public interface ClaseRepository {
     
@@ -41,6 +42,12 @@ public interface ClaseRepository {
      * Obtiene número de turnos confirmados para una clase
      */
     LiveData<ApiResult<Integer>> contarTurnosConfirmados(Long claseId);
+
+    /**
+     * Obtiene las clases filtradas por user
+     */
+
+    LiveData<ApiResult<RespuestaPaginadaHome<ClaseDTO>>> obtenerClasesHome(Long userId);
 }
 
 

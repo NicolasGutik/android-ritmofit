@@ -52,6 +52,7 @@ dependencies {
     
     // Dagger Hilt
     implementation(libs.hilt.android)
+    implementation(libs.preference)
     kapt(libs.hilt.compiler)
     kapt(libs.hilt.androidx.compiler)
     

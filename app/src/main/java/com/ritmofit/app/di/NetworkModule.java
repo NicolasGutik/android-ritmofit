@@ -40,46 +40,38 @@ public class NetworkModule {
                 .setLenient()
                 .create();
     }
-    
+
     @Provides
     @Singleton
-    public OkHttpClient provideOkHttpClient(@ApplicationContext Context context, SharedPreferences encryptedPrefs) {
-        // Interceptor para logging (solo en debug)
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(message -> {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, message);
-            }
-        });
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        
-        // Interceptor para agregar JWT automáticamente
+    public OkHttpClient provideOkHttpClient(
+            @ApplicationContext Context context,
+            SharedPreferences encryptedPrefs // <-- VIENE del StorageModule
+    ) {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(message -> Log.d(TAG, message));
+        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS); // para ver Authorization
+
         Interceptor authInterceptor = chain -> {
-            Request originalRequest = chain.request();
-            
-            // Obtener token desde EncryptedSharedPreferences
-            String token = encryptedPrefs.getString("jwt_token", null);
-            
-            Request.Builder requestBuilder = originalRequest.newBuilder()
-                    .header("Content-Type", "application/json");
-            
-            // Agregar Authorization header si hay token
+            Request original = chain.request();
+
+            String token = encryptedPrefs.getString("jwt_token", null); // misma key que usa AuthRepositoryImpl
+            Request.Builder rb = original.newBuilder()
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json");
+
             if (token != null && !token.isEmpty()) {
-                requestBuilder.header("Authorization", "Bearer " + token);
-                Log.d(TAG, "✅ JWT agregado a la petición: " + originalRequest.url());
-                Log.d(TAG, "🔑 Token: " + token.substring(0, Math.min(20, token.length())) + "...");
-                Log.d(TAG, "🔍 Headers que se enviarán: " + requestBuilder.build().headers());
-                System.out.println("🔑 TOKEN COMPLETO PARA POSTMAN: " + token);
+                rb.header("Authorization", "Bearer " + token);
+                Log.d(TAG, "✅ JWT agregado a: " + original.url());
+                Log.d(TAG, "🔑 Token head: " + token.substring(0, Math.min(20, token.length())) + "...");
             } else {
-                Log.d(TAG, "❌ No hay JWT disponible para: " + originalRequest.url());
-                System.out.println("❌ NO HAY TOKEN DISPONIBLE");
+                Log.d(TAG, "❌ No hay JWT para: " + original.url());
             }
-            
-            return chain.proceed(requestBuilder.build());
+
+            return chain.proceed(rb.build());
         };
-        
+
         return new OkHttpClient.Builder()
-                .addInterceptor(authInterceptor)
-                .addInterceptor(loggingInterceptor)
+                .addInterceptor(authInterceptor)     // agrega el Bearer
+                .addInterceptor(logging)             // imprime headers (incluye Authorization)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)

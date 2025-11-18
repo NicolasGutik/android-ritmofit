@@ -118,7 +118,7 @@ public class HomeFragment extends Fragment {
      public void onResume() {
          super.onResume();
          // Refrescar clases cuando se vuelve a la pantalla
-         viewModel.recargarClases();
+         viewModel.refrescar();
      }
 
     private void handleClasesResult(ApiResult<RespuestaPaginadaDTO<ClaseDTO>> result) {

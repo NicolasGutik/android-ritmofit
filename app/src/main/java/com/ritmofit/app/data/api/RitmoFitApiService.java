@@ -161,6 +161,53 @@ public interface RitmoFitApiService {
      */
     @GET("clasificacion/{email}")
     Call<List<Object>> obtenerClasificacionesPorUsuario(@Path("email") String email);
+
+    // ========== PREFERENCIAS / FILTRO DE USUARIO ==========
+
+    /**
+     * Crea o actualiza SOLO el filtro/preferencias del usuario
+     * POST /auth/upsert/preferencias/{id}
+     */
+    @POST("auth/upsert/preferencias/{id}")
+    @Headers("Content-Type: application/json")
+    Call<Void> upsertPreferencias(
+            @Path("id") Long userId,
+            @Body FiltroClaseUserDTO filtro,
+            @Header("Authorization") String bearerToken
+    );
+
+    /**
+     * Obtiene el filtro/preferencias actual del usuario
+     * GET /auth/get/preferencias/{id}
+     */
+    @GET("auth/get/preferencias/{id}")
+    Call<FiltroClaseUserDTO> getPreferencias(
+            @Path("id") Long userId,
+            @Header("Authorization") String bearerToken
+    );
+
+    /**
+     * Resetea el filtro/preferencias del usuario (vacía)
+     * DELETE /auth/delete/preferencias/{id}
+     */
+    @DELETE("auth/delete/preferencias/{id}")
+    Call<Void> resetPreferencias(
+            @Path("id") Long userId,
+            @Header("Authorization") String bearerToken
+    );
+
+// ========== CLASES SEGÚN PREFERENCIAS DEL USUARIO ==========
+
+    /**
+     * Trae clases aplicando el filtro guardado del usuario
+     * GET /clases/home/{id}
+     */
+    @GET("clases/home/{id}")
+    Call<RespuestaPaginadaHome<ClaseDTO>> getClasesHome(
+            @Path("id") Long userId
+            // si este endpoint queda público no lleva token;
+            // si requiere JWT, agregá @Header("Authorization") String bearerToken
+    );
 }
 
 

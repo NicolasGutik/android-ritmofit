@@ -7,6 +7,8 @@ import com.ritmofit.app.data.repository.AuthRepository;
 import com.ritmofit.app.data.repository.AuthRepositoryImpl;
 import com.ritmofit.app.data.repository.ClaseRepository;
 import com.ritmofit.app.data.repository.ClaseRepositoryImpl;
+import com.ritmofit.app.data.repository.PreferenciasRepository;
+import com.ritmofit.app.data.repository.PreferenciasRepositoryImpl;
 import com.ritmofit.app.data.repository.ReservaRepository;
 import com.ritmofit.app.data.repository.ReservaRepositoryImpl;
 
@@ -32,6 +34,12 @@ public abstract class RepositoryModule {
     @Binds
     @Singleton
     public abstract ReservaRepository bindReservaRepository(ReservaRepositoryImpl reservaRepositoryImpl);
+
+    @Binds
+    @Singleton
+    public abstract PreferenciasRepository bindPreferenciasRepository(
+            PreferenciasRepositoryImpl impl
+    );
 }
 
 
