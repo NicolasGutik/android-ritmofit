@@ -75,6 +75,8 @@ public class PerfilFragment extends Fragment {
     private MaterialButton btnAddSede, btnAddDisc, btnAddFranja;
     private RecyclerView rvFranjas;
     private FranjasAdapter franjasAdapter;
+    private MaterialButton btnResetPref;
+    private @Nullable FiltroClaseUserDTO prefSnapshot;
     private final ArrayList<String> sedes = new ArrayList<>();
     private final ArrayList<String> disciplinas = new ArrayList<>();
     private final ArrayList<FranjaDTO> franjas = new ArrayList<>();
@@ -127,6 +129,15 @@ public class PerfilFragment extends Fragment {
         btnGuardarPerfil.setOnClickListener(_v -> guardarPerfil());
         btnGuardarPref.setOnClickListener(_v -> guardarPreferencias());
         btnLogout.setOnClickListener(_v -> logout());
+        btnResetPref = v.findViewById(R.id.btn_reset_pref);
+        btnResetPref.setOnClickListener(_v -> {
+            if (prefSnapshot == null) {
+                Toast.makeText(requireContext(), "No hay cambios para restablecer", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            aplicarFiltroEnUI(deepCopy(prefSnapshot));
+            Toast.makeText(requireContext(), "Cambios descartados", Toast.LENGTH_SHORT).show();
+        });
 
         cargarUsuario();
         return v;
@@ -214,25 +225,11 @@ public class PerfilFragment extends Fragment {
         preferenciasRepository.getPreferencias(userId).observe(getViewLifecycleOwner(), r -> {
             if (r instanceof ApiResult.Success) {
                 FiltroClaseUserDTO f = ((ApiResult.Success<FiltroClaseUserDTO>) r).getData();
-                // limpiar UI actual
-                chipsSedes.removeAllViews(); sedes.clear();
-                chipsDisciplinas.removeAllViews(); disciplinas.clear();
-                franjas.clear(); franjasAdapter.notifyDataSetChanged();
-
-                if (f != null) {
-                    if (f.getSedes() != null) for (String s : f.getSedes()) {
-                        etSede.setText(s); addChipFromText(etSede, sedes, chipsSedes);
-                    }
-                    if (f.getDisciplinas() != null) for (String d : f.getDisciplinas()) {
-                        etDisc.setText(d); addChipFromText(etDisc, disciplinas, chipsDisciplinas);
-                    }
-                    if (f.getFranjas() != null) {
-                        franjas.addAll(f.getFranjas());
-                        franjasAdapter.notifyDataSetChanged();
-                    }
-                }
+                aplicarFiltroEnUI(f);
+                prefSnapshot = deepCopy(f); // ▼ guardamos snapshot original
             } else if (r instanceof ApiResult.Error) {
                 // si 404 o vacío, simplemente no mostramos nada
+                prefSnapshot = deepCopy(null); // ▼ snapshot vacío
             }
         });
     }
@@ -325,7 +322,10 @@ public class PerfilFragment extends Fragment {
                 .observe(getViewLifecycleOwner(), r -> {
                     showLoading(false);
                     if (r instanceof ApiResult.Success) {
-                        Toast.makeText(requireContext(), "Preferencias guardadas", Toast.LENGTH_SHORT).show();
+                        if (r instanceof ApiResult.Success) {
+                            Toast.makeText(requireContext(), "Preferencias guardadas", Toast.LENGTH_SHORT).show();
+                            prefSnapshot = deepCopy(filtro); // ▼ lo recién guardado pasa a ser el nuevo “original”
+                        }
                     } else if (r instanceof ApiResult.Error) {
                         showError("No se pudieron guardar las preferencias");
                     }
@@ -392,6 +392,35 @@ public class PerfilFragment extends Fragment {
         etFirst.setEnabled(!show);
         etLast.setEnabled(!show);
         etTel.setEnabled(!show);
+    }
+
+    private static FiltroClaseUserDTO deepCopy(FiltroClaseUserDTO f) {
+        if (f == null) return null;
+        FiltroClaseUserDTO c = new FiltroClaseUserDTO();
+        c.setSedes(f.getSedes() == null ? new ArrayList<>() : new ArrayList<>(f.getSedes()));
+        c.setDisciplinas(f.getDisciplinas() == null ? new ArrayList<>() : new ArrayList<>(f.getDisciplinas()));
+        c.setFranjas(f.getFranjas() == null ? new ArrayList<>() : new ArrayList<>(f.getFranjas()));
+        return c;
+    }
+
+    private void aplicarFiltroEnUI(@Nullable FiltroClaseUserDTO f) {
+        // limpiar UI actual
+        chipsSedes.removeAllViews(); sedes.clear();
+        chipsDisciplinas.removeAllViews(); disciplinas.clear();
+        franjas.clear(); franjasAdapter.notifyDataSetChanged();
+
+        if (f == null) return;
+
+        if (f.getSedes() != null) for (String s : f.getSedes()) {
+            etSede.setText(s); addChipFromText(etSede, sedes, chipsSedes);
+        }
+        if (f.getDisciplinas() != null) for (String d : f.getDisciplinas()) {
+            etDisc.setText(d); addChipFromText(etDisc, disciplinas, chipsDisciplinas);
+        }
+        if (f.getFranjas() != null) {
+            franjas.addAll(f.getFranjas());
+            franjasAdapter.notifyDataSetChanged();
+        }
     }
 
     private void showError(String msg) {

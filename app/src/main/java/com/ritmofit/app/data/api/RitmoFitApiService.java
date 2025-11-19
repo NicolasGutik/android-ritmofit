@@ -166,7 +166,6 @@ public interface RitmoFitApiService {
 
     /**
      * Crea o actualiza SOLO el filtro/preferencias del usuario
-     * POST /auth/upsert/preferencias/{id}
      */
     @POST("auth/upsert/preferencias/{id}")
     @Headers("Content-Type: application/json")
@@ -178,7 +177,6 @@ public interface RitmoFitApiService {
 
     /**
      * Obtiene el filtro/preferencias actual del usuario
-     * GET /auth/get/preferencias/{id}
      */
     @GET("auth/get/preferencias/{id}")
     Call<FiltroClaseUserDTO> getPreferencias(
@@ -188,7 +186,6 @@ public interface RitmoFitApiService {
 
     /**
      * Resetea el filtro/preferencias del usuario (vacía)
-     * DELETE /auth/delete/preferencias/{id}
      */
     @DELETE("auth/delete/preferencias/{id}")
     Call<Void> resetPreferencias(
@@ -200,13 +197,20 @@ public interface RitmoFitApiService {
 
     /**
      * Trae clases aplicando el filtro guardado del usuario
-     * GET /clases/home/{id}
+     * que seria
+     * 0 → cumple todas las referencias provistas por el usuario (sede + franja + disciplina).
+     *
+     * 1 → cumple sede + franja (si el usuario definió ambas).
+     *
+     * 2 → cumple exactamente dos referencias (cualquier par excepto el caso especial sede+franja del punto 2).
+     *
+     * 3 → cumple exactamente una referencia.
+     *
+     * 4 → no cumple ninguna (o el usuario no definió ninguna preferencia).
      */
     @GET("clases/home/{id}")
     Call<RespuestaPaginadaHome<ClaseDTO>> getClasesHome(
             @Path("id") Long userId
-            // si este endpoint queda público no lleva token;
-            // si requiere JWT, agregá @Header("Authorization") String bearerToken
     );
 }
 

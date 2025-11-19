@@ -315,9 +315,21 @@
             android:text="Cerrar sesión"
             android:textAllCaps="false"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_reset_pref"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Restablecer cambios"
+            android:textAllCaps="false"
+            android:icon="@android:drawable/ic_menu_revert"
+            app:iconPadding="8dp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="24dp"/>
     </LinearLayout>
+
+
 </androidx.core.widget.NestedScrollView>
 
